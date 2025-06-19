@@ -76,35 +76,13 @@ export default function UploadPage() {
         📜 시가 필요할 때
       </h1>
 
-      <input
-        type="file"
-        accept="image/*"
-        id="file-upload"
-        onChange={handleFileChange}
-        className="hidden"
-      />
-      <label
-        htmlFor="file-upload"
-        className="cursor-pointer mb-6 inline-block bg-gradient-to-r from-orange-500 to-yellow-400 hover:from-orange-600 hover:to-yellow-500 px-8 py-4 rounded-lg text-white font-semibold shadow-lg transition"
-      >
-        이미지 선택하기
-      </label>
-
-      {selectedImage && (
-        <img
-          src={selectedImage}
-          alt="Selected"
-          className="w-full max-w-xl mb-8 rounded-lg shadow-lg object-contain"
-        />
-      )}
-
       {/* 기분 태그 선택 UI */}
       <div className="w-full max-w-xl mb-4 flex justify-center space-x-4">
         {moodOptions.map((mood) => (
           <button
             key={mood}
             onClick={() => setMoodTag(mood)}
-            className={`px-4 py-2 rounded-full font-semibold shadow-md transition ${
+            className={`px-5 py-2 rounded-full font-semibold shadow-md transition ${
               moodTag === mood
                 ? 'bg-indigo-600 text-white'
                 : 'bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
@@ -115,21 +93,36 @@ export default function UploadPage() {
         ))}
       </div>
 
+      {/* 사진 추가하기 버튼 (기분 선택 아래) */}
+      <input
+        type="file"
+        accept="image/*"
+        id="file-upload"
+        onChange={handleFileChange}
+        className="hidden"
+      />
       <label
-        className={`w-full max-w-xl mb-8 font-semibold text-center ${
-          isDarkMode ? 'text-white' : 'text-gray-800'
-        }`}
+        htmlFor="file-upload"
+        className="cursor-pointer mb-6 inline-block bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 px-10 py-4 rounded-xl text-white font-semibold shadow-lg transition text-lg"
       >
-        선택한 기분: {moodTag}
+        사진 추가하기
       </label>
 
+      {selectedImage && (
+        <img
+          src={selectedImage}
+          alt="Selected"
+          className="w-full max-w-xl mb-8 rounded-lg shadow-lg object-contain"
+        />
+      )}
+
+      {/* 시 찾기 버튼 - 넓이 줄이고 세련되게 */}
       <button
         onClick={handleGeneratePoem}
         disabled={loading || !base64Image}
-        className={`w-56 py-4 rounded-xl font-semibold text-white shadow-lg transition
+        className={`w-40 py-3 rounded-xl font-semibold text-white shadow-lg transition
           bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800
-          disabled:opacity-50 disabled:cursor-not-allowed
-        `}
+          disabled:opacity-50 disabled:cursor-not-allowed text-lg`}
       >
         {loading ? (
           <svg
