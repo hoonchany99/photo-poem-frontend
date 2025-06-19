@@ -47,12 +47,15 @@ const handleGeneratePoem = () => {
   }
 
   setLoading(true);
-  setTimeout(() => {
-    setLoading(false);
+
+  try {
     navigate('/result', {
       state: { imageBase64: base64Image, moodTag, story },
     });
-  }, 500);
+  } catch (error) {
+    alert('페이지 이동에 실패했습니다.');
+    setLoading(false);
+  }
 };
 
   const moodOptions = ['평온', '기쁨', '슬픔', '분노', '감사', '설렘'];
