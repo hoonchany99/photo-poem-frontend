@@ -96,19 +96,26 @@ export default function UploadPage() {
         />
       )}
 
-      <div className="w-full max-w-xl mb-4 flex items-center justify-center space-x-4">
-        <span className="text-4xl">🧘</span>
-        <input
-          type="range"
-          min="0"
-          max="10"
-          step="0.1"
-          value={emotionValue}
-          onChange={(e) => setEmotionValue(parseFloat(e.target.value))}
-          className="flex-1 accent-orange-500 cursor-pointer h-2"
-        />
-        <span className="text-4xl">🔥</span>
-      </div>
+      <div className="w-full max-w-xl mb-4 flex flex-col items-center justify-center space-x-4">
+  <div className="flex items-center justify-center w-full space-x-4 mb-2">
+    <span className="text-4xl">🧘</span>
+    <input
+      type="range"
+      min="0"
+      max="10"
+      step="0.1"
+      value={emotionValue}
+      onChange={(e) => setEmotionValue(parseFloat(e.target.value))}
+      className="flex-1 accent-orange-500 cursor-pointer h-2"
+    />
+    <span className="text-4xl">🔥</span>
+  </div>
+  {/* 이모지 설명 */}
+  <div className="flex justify-between w-full text-sm font-medium text-gray-500 dark:text-gray-400 px-2">
+    <span>잔잔</span>
+    <span>흥분</span>
+  </div>
+</div>
 
       <label
         className={`w-full max-w-xl mb-8 font-semibold text-center ${
