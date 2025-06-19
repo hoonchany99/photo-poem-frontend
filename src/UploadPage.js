@@ -52,6 +52,7 @@ const handleGeneratePoem = () => {
     navigate('/result', {
       state: { imageBase64: base64Image, moodTag, story },
     });
+    setLoading(false); // 페이지 이동 후 로딩 상태 해제
   } catch (error) {
     alert('페이지 이동에 실패했습니다.');
     setLoading(false);
