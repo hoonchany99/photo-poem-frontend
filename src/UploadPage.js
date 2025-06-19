@@ -37,19 +37,19 @@ export default function UploadPage() {
     setSelectedImage(URL.createObjectURL(file));
   };
 
-  const handleGeneratePoem = () => {
-    if (!base64Image && !story.trim()) {
-      alert('사진 또는 사연 중 하나는 입력해 주세요.');
-      return;
-    }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/result', {
-        state: { imageBase64: base64Image, moodTag, story },
-      });
-    }, 500);
-  };
+const handleGeneratePoem = () => {
+  if (!base64Image.trim() && !story.trim()) {
+    alert('사진 또는 사연 중 하나는 입력해 주세요.');
+    return;
+  }
+  setLoading(true);
+  setTimeout(() => {
+    setLoading(false);
+    navigate('/result', {
+      state: { imageBase64: base64Image, moodTag, story },
+    });
+  }, 500);
+};
 
   const moodOptions = ['평온', '기쁨', '슬픔', '분노', '감사', '설렘'];
 
