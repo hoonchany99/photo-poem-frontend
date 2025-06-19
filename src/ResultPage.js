@@ -9,28 +9,22 @@ import { ArrowLeft } from 'lucide-react';
 export default function ResultPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { imageBase64, emotionValue } = location.state || {};
+  const { imageBase64, moodTag, story } = location.state || {}; // 수정: emotionValue → moodTag
   const { isDarkMode, toggleDarkMode } = useTheme();
 
   const [poem, setPoem] = useState({ title: '', author: '', poem: '', message: '' });
   const [loading, setLoading] = useState(true);
   const cardRef = useRef();
 
-
   useEffect(() => {
-  // 페이지 진입 시 body 배경색 적용
-  document.body.style.backgroundColor = isDarkMode ? '#111827' : '#f9fafb'; // 다크/라이트 색상
+    document.body.style.backgroundColor = isDarkMode ? '#111827' : '#f9fafb';
+    return () => {
+      document.body.style.backgroundColor = '';
+    };
+  }, [isDarkMode]);
 
-  // 페이지 떠날 때 원래대로 복구
-  return () => {
-    document.body.style.backgroundColor = '';
-  };
-}, [isDarkMode]);
-
-  // 동적 뷰포트 높이 상태
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
-  // 뷰포트 높이 업데이트
   useEffect(() => {
     const updateHeight = () => setViewportHeight(window.innerHeight);
     window.addEventListener('resize', updateHeight);
@@ -41,7 +35,6 @@ export default function ResultPage() {
     };
   }, []);
 
-  // 응답 파싱 함수
   function parsePoemResponse(text) {
     const [title, author, ...rest] = text.split('\n');
     const restText = rest.join('\n').trim();
@@ -53,7 +46,6 @@ export default function ResultPage() {
     return { title, author, poem: poemRaw, message };
   }
 
-  // 시 본문 줄바꿈 렌더링 함수
   function renderPoemText(text) {
     return text.split('\n').map((line, idx) => (
       <p key={idx} className="mb-2 leading-relaxed select-text">
@@ -71,10 +63,13 @@ export default function ResultPage() {
     async function fetchPoem() {
       setLoading(true);
       try {
+        console.log('요청 데이터:', { imageBase64, moodTag, story });
+
         const res = await axios.post(process.env.REACT_APP_API_URL, {
-          imageBase64,
-          emotionScore: emotionValue,
-        });
+  imageBase64,
+  moodTag,
+  story
+});
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
       } catch {
@@ -84,9 +79,8 @@ export default function ResultPage() {
     }
 
     fetchPoem();
-  }, [imageBase64, emotionValue, navigate]);
+  }, [imageBase64, moodTag, story, navigate]); // 수정: emotionValue → moodTag
 
-  // 시 카드 저장
   const saveAsImage = () => {
     if (!cardRef.current) return;
     html2canvas(cardRef.current, { scale: 2 }).then((canvas) => {
@@ -108,7 +102,6 @@ export default function ResultPage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
-      {/* 다크모드 토글 */}
       <div
         className="absolute top-5 right-5 cursor-pointer select-none z-50"
         onClick={toggleDarkMode}
@@ -136,7 +129,11 @@ export default function ResultPage() {
             viewBox="0 0 24 24"
           >
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z" />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"
+            />
           </svg>
         </div>
       ) : (
@@ -152,20 +149,16 @@ export default function ResultPage() {
             className="w-full rounded-xl object-cover aspect-[16/9] shadow-2xl mb-12 border border-gray-300 dark:border-gray-700"
           />
 
-          {/* 시 제목 */}
           <h2 className="text-5xl font-extrabold mb-2 text-indigo-800 dark:text-indigo-300 tracking-wide text-center">
             {poem.title}
           </h2>
 
-          {/* 작가 이름 */}
           <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-10 text-center">
             {poem.author}
           </h3>
 
-          {/* 시 본문 */}
           <div className="mb-10">{renderPoemText(poem.poem)}</div>
 
-          {/* 시 해설 및 감정 메시지 (양쪽 정렬) */}
           <p className="mt-12 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify">
             {poem.message}
           </p>
@@ -179,7 +172,6 @@ export default function ResultPage() {
             </button>
           </div>
 
-          {/* 뒤로가기 버튼 (아이콘 적용) */}
           <button
             onClick={() => navigate(-1)}
             aria-label="뒤로가기"
@@ -191,7 +183,6 @@ export default function ResultPage() {
         </motion.div>
       )}
 
-      {/* 시 카드 (저장용, 반드시 숨김 X, 화면 밖 배치) */}
       <div
         ref={cardRef}
         className="absolute left-[-9999px] top-0 w-[700px] h-[900px] overflow-hidden shadow-2xl border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-900"
@@ -205,7 +196,6 @@ export default function ResultPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70"></div>
 
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-12 py-16 text-white font-noto">
-          {/* 앱 로고 */}
           <span className="absolute top-6 right-6 text-lg font-semibold opacity-80">
             📜 시가 필요할 때
           </span>
