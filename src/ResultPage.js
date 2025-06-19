@@ -16,6 +16,17 @@ export default function ResultPage() {
   const [loading, setLoading] = useState(true);
   const cardRef = useRef();
 
+
+  useEffect(() => {
+  // 페이지 진입 시 body 배경색 적용
+  document.body.style.backgroundColor = isDarkMode ? '#111827' : '#f9fafb'; // 다크/라이트 색상
+
+  // 페이지 떠날 때 원래대로 복구
+  return () => {
+    document.body.style.backgroundColor = '';
+  };
+}, [isDarkMode]);
+
   // 동적 뷰포트 높이 상태
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
 
