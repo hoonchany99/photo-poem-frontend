@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [base64Image, setBase64Image] = useState('');
-  const [emotionValue, setEmotionValue] = useState(5);
+  const [moodTag, setMoodTag] = useState('평온'); // 감정 점수 대신 기분 태그
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -44,10 +44,12 @@ export default function UploadPage() {
     setTimeout(() => {
       setLoading(false);
       navigate('/result', {
-        state: { imageBase64: base64Image, emotionValue },
+        state: { imageBase64: base64Image, moodTag }, // 감정 점수 대신 기분 태그 전달
       });
     }, 500);
   };
+
+  const moodOptions = ['평온', '기쁨', '슬픔', '분노', '감사', '설렘'];
 
   return (
     <div
@@ -96,33 +98,29 @@ export default function UploadPage() {
         />
       )}
 
-      <div className="w-full max-w-xl mb-4 flex flex-col items-center justify-center space-x-4">
-  <div className="flex items-center justify-center w-full space-x-4 mb-2">
-    <span className="text-4xl">🧘</span>
-    <input
-      type="range"
-      min="0"
-      max="10"
-      step="0.1"
-      value={emotionValue}
-      onChange={(e) => setEmotionValue(parseFloat(e.target.value))}
-      className="flex-1 accent-orange-500 cursor-pointer h-2"
-    />
-    <span className="text-4xl">🔥</span>
-  </div>
-  {/* 이모지 설명 */}
-  <div className="flex justify-between w-full text-sm font-medium text-gray-500 dark:text-gray-400 px-2">
-    <span>잔잔</span>
-    <span>흥분</span>
-  </div>
-</div>
+      {/* 기분 태그 선택 UI */}
+      <div className="w-full max-w-xl mb-4 flex justify-center space-x-4">
+        {moodOptions.map((mood) => (
+          <button
+            key={mood}
+            onClick={() => setMoodTag(mood)}
+            className={`px-4 py-2 rounded-full font-semibold shadow-md transition ${
+              moodTag === mood
+                ? 'bg-indigo-600 text-white'
+                : 'bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+            }`}
+          >
+            {mood}
+          </button>
+        ))}
+      </div>
 
       <label
         className={`w-full max-w-xl mb-8 font-semibold text-center ${
           isDarkMode ? 'text-white' : 'text-gray-800'
         }`}
       >
-        감정 정도: {emotionValue.toFixed(1)}
+        선택한 기분: {moodTag}
       </label>
 
       <button
