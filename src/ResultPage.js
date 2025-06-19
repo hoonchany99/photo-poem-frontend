@@ -87,8 +87,8 @@ export default function ResultPage() {
 
   return (
     <motion.div
-      className={`min-h-screen p-8 flex flex-col items-center justify-center flex-grow transition-colors duration-700 ${
-        isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
+      className={`min-h-[100svh] p-8 flex flex-col items-center justify-center flex-grow transition-colors duration-700 ${
+    isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
       } relative`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
