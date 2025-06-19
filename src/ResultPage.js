@@ -74,8 +74,8 @@ export default function ResultPage() {
 
   return (
     <motion.div
-      className={`min-h-screen p-8 flex flex-col items-center justify-start transition-colors duration-700 ${
-        isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
+      className={`min-h-screen p-8 flex flex-col items-center justify-center flex-grow transition-colors duration-700 ${
+    isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
       } relative`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -168,8 +168,8 @@ export default function ResultPage() {
       {/* 시 카드 (저장용, 반드시 숨김 X, 화면 밖 배치) */}
       <div
         ref={cardRef}
-        className="absolute left-[-9999px] top-0 w-[700px] h-[900px] overflow-hidden shadow-2xl border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-900"
-      >
+        className="absolute left-[-9999px] top-0 w-[700px] h-[900px] overflow-hidden"
+  style={{ backgroundColor: 'transparent' }}>
         <img
           src={imageBase64}
           alt="Poem Background"
