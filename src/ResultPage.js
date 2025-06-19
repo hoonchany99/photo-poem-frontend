@@ -15,6 +15,21 @@ export default function ResultPage() {
   const [poem, setPoem] = useState({ title: '', author: '', poem: '', message: '' });
   const [loading, setLoading] = useState(true);
   const cardRef = useRef();
+  const [viewportHeight, setViewportHeight] = useState('100vh'); // 🔥 추가
+
+  // ✅ 모바일 브라우저 높이 정확히 반영
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      setViewportHeight(`${window.innerHeight}px`);
+    };
+
+    updateViewportHeight();
+    window.addEventListener('resize', updateViewportHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateViewportHeight);
+    };
+  }, []);
 
   // 응답 파싱 함수
   function parsePoemResponse(text) {
@@ -28,7 +43,6 @@ export default function ResultPage() {
     return { title, author, poem: poemRaw, message };
   }
 
-  // 시 본문 줄바꿈 렌더링 함수
   function renderPoemText(text) {
     return text.split('\n').map((line, idx) => (
       <p key={idx} className="mb-2 leading-relaxed select-text">
@@ -61,7 +75,6 @@ export default function ResultPage() {
     fetchPoem();
   }, [imageBase64, emotionValue, navigate]);
 
-  // 시 카드 저장
   const saveAsImage = () => {
     if (!cardRef.current) return;
     html2canvas(cardRef.current, { scale: 2 }).then((canvas) => {
@@ -75,7 +88,7 @@ export default function ResultPage() {
   return (
     <motion.div
       className={`min-h-screen p-8 flex flex-col items-center justify-center flex-grow transition-colors duration-700 ${
-    isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
+        isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
       } relative`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -99,7 +112,10 @@ export default function ResultPage() {
       </div>
 
       {loading ? (
-        <div className="mt-28 flex flex-col items-center">
+        <div
+          style={{ height: viewportHeight }} // ✅ 모바일 전용 높이 적용
+          className="w-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900"
+        >
           <span className="text-2xl font-semibold mb-4 text-indigo-700 dark:text-indigo-400">
             시 찾는 중...
           </span>
@@ -126,20 +142,15 @@ export default function ResultPage() {
             className="w-full rounded-xl object-cover aspect-[16/9] shadow-2xl mb-12 border border-gray-300 dark:border-gray-700"
           />
 
-          {/* 시 제목 */}
           <h2 className="text-5xl font-extrabold mb-2 text-indigo-800 dark:text-indigo-300 tracking-wide text-center">
             {poem.title}
           </h2>
-
-          {/* 작가 이름 */}
           <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-10 text-center">
             {poem.author}
           </h3>
 
-          {/* 시 본문 */}
           <div className="mb-10">{renderPoemText(poem.poem)}</div>
 
-          {/* 시 해설 및 감정 메시지 (양쪽 정렬) */}
           <p className="mt-12 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify">
             {poem.message}
           </p>
@@ -153,7 +164,6 @@ export default function ResultPage() {
             </button>
           </div>
 
-          {/* 뒤로가기 버튼 (아이콘 적용) */}
           <button
             onClick={() => navigate(-1)}
             aria-label="뒤로가기"
@@ -165,11 +175,12 @@ export default function ResultPage() {
         </motion.div>
       )}
 
-      {/* 시 카드 (저장용, 반드시 숨김 X, 화면 밖 배치) */}
+      {/* 시 카드 (저장용) */}
       <div
         ref={cardRef}
         className="absolute left-[-9999px] top-0 w-[700px] h-[900px] overflow-hidden"
-  style={{ backgroundColor: 'transparent' }}>
+        style={{ backgroundColor: 'transparent' }} // ✅ 배경 완전 투명
+      >
         <img
           src={imageBase64}
           alt="Poem Background"
@@ -179,7 +190,6 @@ export default function ResultPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70"></div>
 
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-12 py-16 text-white font-noto">
-          {/* 앱 로고 */}
           <span className="absolute top-6 right-6 text-lg font-semibold opacity-80">
             📜 시가 필요할 때
           </span>
