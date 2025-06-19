@@ -38,10 +38,14 @@ export default function UploadPage() {
   };
 
 const handleGeneratePoem = () => {
-  if (!base64Image.trim() && !story.trim()) {
+  const hasImage = typeof base64Image === 'string' && base64Image.trim() !== '';
+  const hasStory = story.trim() !== '';
+
+  if (!hasImage && !hasStory) {
     alert('사진 또는 사연 중 하나는 입력해 주세요.');
     return;
   }
+
   setLoading(true);
   setTimeout(() => {
     setLoading(false);
