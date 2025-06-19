@@ -53,7 +53,7 @@ export default function ResultPage() {
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
       } catch {
-        alert('시 생성에 실패했습니다.');
+        alert('시 찾기에 실패했습니다.');
       }
       setLoading(false);
     }
