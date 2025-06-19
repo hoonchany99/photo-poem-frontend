@@ -46,7 +46,7 @@ export default function ResultPage() {
     async function fetchPoem() {
       setLoading(true);
       try {
-        const res = await axios.post('http://localhost:3001/poem', {
+        const res = await axios.post(process.env.REACT_APP_API_URL, {
           imageBase64,
           emotionScore: emotionValue,
         });
