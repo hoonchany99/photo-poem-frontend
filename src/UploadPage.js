@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ImagePlus } from 'lucide-react';
 
 export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [base64Image, setBase64Image] = useState('');
   const [moodTag, setMoodTag] = useState('평온'); // 감정 점수 대신 기분 태그
+  const [story, setStory] = useState(''); // 사연
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -36,15 +38,15 @@ export default function UploadPage() {
   };
 
   const handleGeneratePoem = () => {
-    if (!base64Image) {
-      alert('이미지를 먼저 업로드해주세요.');
+    if (!base64Image && !story.trim()) {
+      alert('사진 또는 사연 중 하나는 입력해 주세요.');
       return;
     }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       navigate('/result', {
-        state: { imageBase64: base64Image, moodTag }, // 감정 점수 대신 기분 태그 전달
+        state: { imageBase64: base64Image, moodTag, story },
       });
     }, 500);
   };
@@ -93,7 +95,20 @@ export default function UploadPage() {
         ))}
       </div>
 
-      {/* 사진 추가하기 버튼 (기분 선택 아래) */}
+      {/* 사연 쓰기 */}
+      <textarea
+        placeholder="사진이나 기분을 담은 짧은 사연을 작성해 보세요."
+        value={story}
+        onChange={(e) => setStory(e.target.value)}
+        className={`w-full max-w-xl mb-6 p-4 rounded-lg border ${
+          isDarkMode
+            ? 'border-gray-600 bg-gray-800 text-white placeholder-gray-400'
+            : 'border-gray-300 bg-white text-black placeholder-gray-500'
+        } resize-none font-noto focus:outline-none focus:ring-2 focus:ring-indigo-500 transition`}
+        rows={4}
+      />
+
+      {/* 사진 추가하기 버튼 (기분 선택, 사연 입력 아래) */}
       <input
         type="file"
         accept="image/*"
@@ -103,9 +118,10 @@ export default function UploadPage() {
       />
       <label
         htmlFor="file-upload"
-        className="cursor-pointer mb-6 inline-block bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 px-10 py-4 rounded-xl text-white font-semibold shadow-lg transition text-lg"
+        className="cursor-pointer mb-6 inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition text-lg select-none"
       >
-        사진 추가하기
+        <ImagePlus size={24} />
+        <span>사진 추가하기</span>
       </label>
 
       {selectedImage && (
@@ -116,10 +132,10 @@ export default function UploadPage() {
         />
       )}
 
-      {/* 시 찾기 버튼 - 넓이 줄이고 세련되게 */}
+      {/* 시 찾기 버튼 - 세련되게 */}
       <button
         onClick={handleGeneratePoem}
-        disabled={loading || !base64Image}
+        disabled={loading || (!base64Image && !story.trim())}
         className={`w-40 py-3 rounded-xl font-semibold text-white shadow-lg transition
           bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800
           disabled:opacity-50 disabled:cursor-not-allowed text-lg`}
