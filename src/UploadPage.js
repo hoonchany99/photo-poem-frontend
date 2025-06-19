@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ImagePlus } from 'lucide-react';
+import { ImagePlus, Search } from 'lucide-react';
 
 export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [base64Image, setBase64Image] = useState('');
-  const [moodTag, setMoodTag] = useState('평온'); // 감정 점수 대신 기분 태그
-  const [story, setStory] = useState(''); // 사연
+  const [moodTag, setMoodTag] = useState('평온');
+  const [story, setStory] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -108,7 +108,7 @@ export default function UploadPage() {
         rows={4}
       />
 
-      {/* 사진 추가하기 버튼 (기분 선택, 사연 입력 아래) */}
+      {/* 사진 추가하기 버튼 - 세련된 오렌지/옐로우 컬러 */}
       <input
         type="file"
         accept="image/*"
@@ -118,7 +118,7 @@ export default function UploadPage() {
       />
       <label
         htmlFor="file-upload"
-        className="cursor-pointer mb-6 inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition text-lg select-none"
+        className="cursor-pointer mb-6 inline-flex items-center space-x-2 bg-gradient-to-r from-orange-400 to-yellow-400 hover:from-orange-500 hover:to-yellow-500 px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition text-lg select-none"
       >
         <ImagePlus size={24} />
         <span>사진 추가하기</span>
@@ -132,17 +132,17 @@ export default function UploadPage() {
         />
       )}
 
-      {/* 시 찾기 버튼 - 세련되게 */}
+      {/* 시 찾기 버튼 - 세련된 퍼플/인디고 컬러 */}
       <button
         onClick={handleGeneratePoem}
         disabled={loading || (!base64Image && !story.trim())}
-        className={`w-40 py-3 rounded-xl font-semibold text-white shadow-lg transition
+        className={`w-40 py-3 rounded-xl font-semibold text-white shadow-lg transition flex items-center justify-center space-x-2
           bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800
           disabled:opacity-50 disabled:cursor-not-allowed text-lg`}
       >
         {loading ? (
           <svg
-            className="animate-spin h-6 w-6 mx-auto text-white"
+            className="animate-spin h-6 w-6 text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -162,7 +162,10 @@ export default function UploadPage() {
             />
           </svg>
         ) : (
-          '시 찾기'
+          <>
+            <Search size={20} />
+            <span>시 찾기</span>
+          </>
         )}
       </button>
     </div>
