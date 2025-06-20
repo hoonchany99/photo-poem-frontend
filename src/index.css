@@ -28,6 +28,46 @@ html, body, #root {
   animation: fadeInOut 3s ease-in-out infinite;
 }
 
+/* 공통 슬라이더 스타일 */
+input.slider {
+  -webkit-appearance: none; /* Remove default styling */
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #ddd;
+  outline: none;
+}
+
+/* 슬라이더 트랙 */
+input.slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* 슬라이더 썸 (라이트모드) */
+input.light-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #6366f1; /* indigo-500 */
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px; /* Align thumb with track */
+}
+
+/* 슬라이더 썸 (다크모드) */
+input.dark-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #facc15; /* yellow-400 */
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

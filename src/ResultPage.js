@@ -25,18 +25,18 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
       {useImageBackground && imageBase64 && (
         <>
           <img
-  src={imageBase64}
-  alt="Poem Background"
-  className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-90 blur-[4px]"
-  style={{
-    filter: 'blur(4px)',
-    objectPosition: 'center center',
-  }}
-/>
+            src={imageBase64}
+            alt="Poem Background"
+            className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-90 blur-[6px]"
+            style={{
+              filter: 'blur(6px)',
+              objectPosition: 'center center',
+            }}
+          />
           <div
-        className="absolute inset-0 bg-black"
-        style={{ opacity: overlayOpacity*0.5 }} // ✅ 기존 오버레이 그대로 유지
-      />
+            className="absolute inset-0 bg-black"
+            style={{ opacity: overlayOpacity * 0.7 }}
+          />
         </>
       )}
 
@@ -99,12 +99,11 @@ export default function ResultPage() {
     'linear-gradient(135deg, #fda4af 0%, #fb7185 100%)',
   ];
 
-  // 시 길이에 따른 기본 텍스트 크기 결정 함수
   const getDefaultTextSize = (poemText) => {
     const length = poemText.replace(/\n/g, '').length;
-    if (length > 250) return 20;  // 긴 시
-    if (length > 150) return 30;  // 중간 길이
-    return 40;                   // 짧은 시
+    if (length > 250) return 20;
+    if (length > 150) return 30;
+    return 40;
   };
 
   const [textSize, setTextSize] = useState(36);
@@ -147,8 +146,6 @@ export default function ResultPage() {
         });
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
-
-        // 시 텍스트 길이에 따라 기본 텍스트 크기 조절
         setTextSize(getDefaultTextSize(parsed.poem));
       } catch {
         alert('시 찾기에 실패했습니다.');
@@ -217,9 +214,14 @@ export default function ResultPage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
-      {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
+      {/* 상단 바 - 로고 & 다크모드 버튼 (항상 보임) */}
       <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
-        <span className="font-semibold text-sm font-noto">📜 시가 필요할 때</span>
+        <span
+          className="font-semibold text-sm font-noto cursor-pointer"
+          onClick={() => navigate('/')}
+        >
+          📜 시가 필요할 때
+        </span>
         <motion.div
           className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 shadow-lg cursor-pointer"
           onClick={toggleDarkMode}
@@ -234,7 +236,7 @@ export default function ResultPage() {
 
       {loading ? (
         <div
-          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-50 px-4"
+          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-40 px-4"
           style={{ overflow: 'hidden' }}
         >
           <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
@@ -276,7 +278,7 @@ export default function ResultPage() {
             />
           </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
+                    <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
             {imageBase64 && (
               <button
                 onClick={() => setUseImageBackground(true)}
@@ -315,15 +317,15 @@ export default function ResultPage() {
               <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
                 🌒
               </label>
-              <input
-                type="range"
-                min={0}
-                max={0.8}
-                step={0.001}
-                value={overlayOpacity}
-                onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-indigo-500"
-              />
+             <input
+  type="range"
+  min={0}
+  max={0.8}
+  step={0.001}
+  value={overlayOpacity}
+  onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
+  className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
+/>
             </div>
 
             {/* 텍스트 크기 */}
@@ -332,14 +334,14 @@ export default function ResultPage() {
                 ✍️
               </label>
               <input
-                type="range"
-                min={10}
-                max={56}
-                step={0.1}
-                value={textSize}
-                onChange={(e) => setTextSize(parseFloat(e.target.value))}
-                className="w-full cursor-pointer accent-indigo-500"
-              />
+  type="range"
+  min={10}
+  max={56}
+  step={0.1}
+  value={textSize}
+  onChange={(e) => setTextSize(parseFloat(e.target.value))}
+  className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
+/>
             </div>
 
           </div>
