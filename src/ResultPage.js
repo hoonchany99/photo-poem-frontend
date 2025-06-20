@@ -174,7 +174,7 @@ export default function ResultPage() {
       try {
         await navigator.share({
           title: '시가 필요할 때',
-          url: window.location.href,
+          url: 'https://photo-poem-frontend.vercel.app/?v=2',
         });
       } catch (err) {
         if (err.name !== 'AbortError') {
