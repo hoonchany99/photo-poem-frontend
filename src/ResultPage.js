@@ -4,36 +4,90 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { useTheme } from './context/ThemeContext';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Share2, Image as ImageIcon } from 'lucide-react';
+
+function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, overlayOpacity, textSize, selectedGradient }) {
+  const gradientBackground = `linear-gradient(rgba(0,0,0,${overlayOpacity}), rgba(0,0,0,${overlayOpacity})), ${selectedGradient}`;
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className="w-[700px] h-[900px] relative overflow-hidden shadow-2xl rounded-3xl mx-auto"
+      style={{
+        background: !useImageBackground
+          ? gradientBackground
+          : 'black',
+      }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
+    >
+      {useImageBackground && imageBase64 && (
+        <>
+          <img
+            src={imageBase64}
+            alt="Poem Background"
+            className="absolute inset-0 w-full h-full object-cover opacity-75 blur-[8px]"
+            style={{ filter: 'blur(8px)' }}
+          />
+          <div
+            className="absolute inset-0 bg-black"
+            style={{ opacity: overlayOpacity }}
+          />
+        </>
+      )}
+
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-12 py-16 text-white font-noto">
+        <span className="absolute top-6 right-6 text-lg font-semibold opacity-90 drop-shadow-lg select-none">
+          📜 시가 필요할 때
+        </span>
+
+        <h2 className="text-5xl font-extrabold mb-4 text-center drop-shadow-2xl" style={{ fontSize: `${textSize}px` }}>
+          {poem.title}
+        </h2>
+        <h3 className="text-xl font-medium mb-10 text-center drop-shadow-lg" style={{ fontSize: `${textSize * 0.6}px` }}>
+          {poem.author}
+        </h3>
+        <div className="leading-relaxed whitespace-pre-wrap text-center drop-shadow-md" style={{ fontSize: `${textSize * 0.5}px` }}>
+          {poem.poem}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function ResultPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { imageBase64, moodTag, story } = location.state || {}; // 수정: emotionValue → moodTag
+  const { imageBase64, moodTag, story } = location.state || {};
   const { isDarkMode, toggleDarkMode } = useTheme();
 
   const [poem, setPoem] = useState({ title: '', author: '', poem: '', message: '' });
   const [loading, setLoading] = useState(true);
   const cardRef = useRef();
 
+  const [useImageBackground, setUseImageBackground] = useState(Boolean(imageBase64));
+
+  const gradientOptions = [
+    'linear-gradient(135deg, #e0e7ff 0%, #a5b4fc 100%)',
+    'linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%)',
+    'linear-gradient(135deg, #fef08a 0%, #fde047 100%)',
+    'linear-gradient(135deg, #bbf7d0 0%, #86efac 100%)',
+    'linear-gradient(135deg, #fda4af 0%, #fb7185 100%)',
+  ];
+
+  const [overlayOpacity, setOverlayOpacity] = useState(0.4);
+  const [textSize, setTextSize] = useState(40);
+  const [selectedGradient, setSelectedGradient] = useState(gradientOptions[0]);
+
   useEffect(() => {
-    document.body.style.backgroundColor = isDarkMode ? '#111827' : '#f9fafb';
+    document.body.style.backgroundColor = isDarkMode ? '#111827' : '';
+    document.body.style.overflow = loading ? 'hidden' : 'auto';
     return () => {
       document.body.style.backgroundColor = '';
+      document.body.style.overflow = 'auto';
     };
-  }, [isDarkMode]);
-
-  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-
-  useEffect(() => {
-    const updateHeight = () => setViewportHeight(window.innerHeight);
-    window.addEventListener('resize', updateHeight);
-    window.addEventListener('orientationchange', updateHeight);
-    return () => {
-      window.removeEventListener('resize', updateHeight);
-      window.removeEventListener('orientationchange', updateHeight);
-    };
-  }, []);
+  }, [isDarkMode, loading]);
 
   function parsePoemResponse(text) {
     const [title, author, ...rest] = text.split('\n');
@@ -46,16 +100,8 @@ export default function ResultPage() {
     return { title, author, poem: poemRaw, message };
   }
 
-  function renderPoemText(text) {
-    return text.split('\n').map((line, idx) => (
-      <p key={idx} className="mb-2 leading-relaxed select-text">
-        {line}
-      </p>
-    ));
-  }
-
   useEffect(() => {
-    if (!imageBase64) {
+    if (!imageBase64 && !story.trim() && !moodTag.trim()) {
       navigate('/');
       return;
     }
@@ -63,13 +109,11 @@ export default function ResultPage() {
     async function fetchPoem() {
       setLoading(true);
       try {
-        console.log('요청 데이터:', { imageBase64, moodTag, story });
-
         const res = await axios.post(process.env.REACT_APP_API_URL, {
-  imageBase64,
-  moodTag,
-  story
-});
+          imageBase64,
+          moodTag,
+          story,
+        });
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
       } catch {
@@ -79,7 +123,7 @@ export default function ResultPage() {
     }
 
     fetchPoem();
-  }, [imageBase64, moodTag, story, navigate]); // 수정: emotionValue → moodTag
+  }, [imageBase64, moodTag, story, navigate]);
 
   const saveAsImage = () => {
     if (!cardRef.current) return;
@@ -91,11 +135,48 @@ export default function ResultPage() {
     });
   };
 
+  const sharePoem = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: '시가 필요할 때',
+          text: `${poem.title} - ${poem.author}`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          alert('공유 중 오류가 발생했습니다.');
+        }
+      }
+    } else {
+      alert('공유를 지원하지 않는 브라우저입니다.');
+    }
+  };
+
+  const loadingMessages = [
+    '시 찾는 중... ✨',
+    '잠시만 기다려 주세요... ⏳',
+    '마음에 드는 시를 찾고 있어요... 💌',
+    '곧 아름다운 시가 도착합니다... 🌸',
+  ];
+
+  const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setLoadingMsgIndex((prev) => (prev + 1) % loadingMessages.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [loading]);
+
   return (
     <motion.div
-      style={{ minHeight: `${viewportHeight}px` }}
-      className={`p-8 flex flex-col items-center justify-center flex-grow transition-colors duration-700 ${
-        isDarkMode ? 'dark bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
+      className={`min-h-screen p-8 flex flex-col items-center justify-center transition-colors duration-700 ${
+        isDarkMode
+          ? 'dark bg-gray-900 text-white'
+          : 'bg-gradient-to-b from-[#FAF5E4] to-[#FDF6E3] text-black'
       } relative`}
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -118,17 +199,27 @@ export default function ResultPage() {
       </div>
 
       {loading ? (
-        <div className="mt-28 flex flex-col items-center">
-          <span className="text-2xl font-semibold mb-4 text-indigo-700 dark:text-indigo-400">
-            시 찾는 중...
+        <div
+          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-50 px-4"
+          style={{ overflow: 'hidden' }}
+        >
+          <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
+            {loadingMessages[loadingMsgIndex]}
           </span>
           <svg
-            className="animate-spin h-10 w-10 text-indigo-600 dark:text-indigo-400"
+            className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
             <path
               className="opacity-75"
               fill="currentColor"
@@ -137,38 +228,103 @@ export default function ResultPage() {
           </svg>
         </div>
       ) : (
-        <motion.div
-          className="max-w-3xl w-full bg-gradient-to-br from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-12 shadow-2xl font-noto"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-        >
-          <img
-            src={imageBase64}
-            alt="Uploaded"
-            className="w-full rounded-xl object-cover aspect-[16/9] shadow-2xl mb-12 border border-gray-300 dark:border-gray-700"
+        <>
+          <PoemCard
+            useImageBackground={useImageBackground}
+            imageBase64={imageBase64}
+            poem={poem}
+            isDarkMode={isDarkMode}
+            cardRef={cardRef}
+            overlayOpacity={overlayOpacity}
+            textSize={textSize}
+            selectedGradient={selectedGradient}
           />
 
-          <h2 className="text-5xl font-extrabold mb-2 text-indigo-800 dark:text-indigo-300 tracking-wide text-center">
-            {poem.title}
-          </h2>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
+            {imageBase64 && (
+              <button
+                onClick={() => setUseImageBackground(true)}
+                className={`w-12 h-12 rounded-full shadow-md flex items-center justify-center transition ${
+                  useImageBackground ? 'scale-110 ring-4 ring-indigo-500 bg-indigo-600 text-white' : 'bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-indigo-500 hover:text-white'
+                }`}
+                aria-label="사진 배경 선택"
+                title="사진 배경 선택"
+              >
+                <ImageIcon size={20} />
+              </button>
+            )}
 
-          <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-10 text-center">
-            {poem.author}
-          </h3>
+            {gradientOptions.map((gradient, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setSelectedGradient(gradient);
+                  setUseImageBackground(false);
+                }}
+                className={`w-12 h-12 rounded-full shadow-md transition-transform duration-200 ${
+                  !useImageBackground && selectedGradient === gradient ? 'scale-110 ring-4 ring-indigo-500' : ''
+                }`}
+                style={{ background: gradient }}
+                aria-label={`그라데이션 배경 선택 ${idx + 1}`}
+                title={`그라데이션 배경 선택 ${idx + 1}`}
+              />
+            ))}
+          </div>
 
-          <div className="mb-10">{renderPoemText(poem.poem)}</div>
+          {/* 슬라이더 컨트롤 - 가로 정렬 */}
+          <div className="w-full max-w-2xl mt-6 mb-10 flex flex-col sm:flex-row justify-center gap-8 items-center">
 
-          <p className="mt-12 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify">
+            {/* 배경 어둡기 */}
+            <div className="flex flex-col items-center flex-1">
+              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
+                🌒
+              </label>
+              <input
+                type="range"
+                min={0}
+                max={0.8}
+                step={0.001}
+                value={overlayOpacity}
+                onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
+                className="w-full cursor-pointer accent-indigo-500"
+              />
+            </div>
+
+            {/* 텍스트 크기 */}
+            <div className="flex flex-col items-center flex-1">
+              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
+                ✍️
+              </label>
+              <input
+                type="range"
+                min={24}
+                max={56}
+                step={0.1}
+                value={textSize}
+                onChange={(e) => setTextSize(parseFloat(e.target.value))}
+                className="w-full cursor-pointer accent-indigo-500"
+              />
+            </div>
+
+          </div>
+
+          <p className="mt-6 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify max-w-2xl font-noto">
             {poem.message}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-8 w-full max-w-md mx-auto mt-10">
+          <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md mx-auto mt-10">
             <button
               onClick={saveAsImage}
               className="flex-1 px-8 py-5 bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold rounded-3xl shadow-md hover:from-indigo-700 hover:to-purple-800 transition text-xl"
             >
               시 카드 저장하기
+            </button>
+
+            <button
+              onClick={sharePoem}
+              className="flex-1 px-8 py-5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white font-semibold rounded-3xl shadow-md hover:from-purple-800 hover:to-indigo-700 transition text-xl flex items-center justify-center gap-2"
+            >
+              <Share2 size={20} /> 공유하기
             </button>
           </div>
 
@@ -180,31 +336,8 @@ export default function ResultPage() {
           >
             <ArrowLeft size={28} />
           </button>
-        </motion.div>
+        </>
       )}
-
-      <div
-        ref={cardRef}
-        className="absolute left-[-9999px] top-0 w-[700px] h-[900px] overflow-hidden shadow-2xl border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-900"
-      >
-        <img
-          src={imageBase64}
-          alt="Poem Background"
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
-          style={{ filter: 'blur(15px)' }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/70"></div>
-
-        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-12 py-16 text-white font-noto">
-          <span className="absolute top-6 right-6 text-lg font-semibold opacity-80">
-            📜 시가 필요할 때
-          </span>
-
-          <h2 className="text-5xl font-extrabold mb-4 text-center">{poem.title}</h2>
-          <h3 className="text-xl font-medium mb-10 text-center">{poem.author}</h3>
-          <div className="text-lg leading-relaxed whitespace-pre-wrap text-center">{poem.poem}</div>
-        </div>
-      </div>
     </motion.div>
   );
 }
