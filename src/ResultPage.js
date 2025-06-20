@@ -38,18 +38,19 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
       )}
 
       <div
-        className="relative z-10 w-full h-full flex flex-col items-center justify-center text-white font-noto px-12 py-16 sm:px-12 sm:py-16 px-6 py-10"
+        className="relative z-10 w-full h-full flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16"
       >
         {/* 로고 */}
         <span
-          className="absolute top-6 right-6 text-lg font-semibold opacity-90 drop-shadow-lg select-none sm:text-lg text-sm"
+          className="absolute top-6 right-6 opacity-90 drop-shadow-lg select-none font-semibold text-sm sm:text-lg"
+          style={{ userSelect: 'none' }}
         >
           📜 시가 필요할 때
         </span>
 
         {/* 제목 */}
         <h2
-          className="text-5xl font-extrabold mb-4 text-center drop-shadow-2xl sm:text-5xl text-3xl"
+          className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
           style={{ fontSize: `${textSize}px` }}
         >
           {poem.title}
@@ -57,7 +58,7 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
 
         {/* 작가 */}
         <h3
-          className="text-xl font-medium mb-10 text-center drop-shadow-lg sm:text-xl text-lg"
+          className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
           style={{ fontSize: `${textSize * 0.6}px` }}
         >
           {poem.author}
@@ -65,7 +66,7 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
 
         {/* 시 본문 */}
         <div
-          className="leading-relaxed whitespace-pre-wrap text-center drop-shadow-md sm:text-base text-sm"
+          className="leading-relaxed whitespace-pre-wrap text-center drop-shadow-md text-sm sm:text-base"
           style={{ fontSize: `${textSize * 0.5}px` }}
         >
           {poem.poem}
@@ -203,7 +204,7 @@ export default function ResultPage() {
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
       <div
-        className="absolute top-5 right-5 cursor-pointer select-none z-50"
+        className="absolute top-5 right-16 cursor-pointer select-none z-50"
         onClick={toggleDarkMode}
         aria-label="Toggle dark mode"
         title="다크 모드 토글"
