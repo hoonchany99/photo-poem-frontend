@@ -32,7 +32,7 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
           />
           <div
         className="absolute inset-0 bg-black"
-        style={{ opacity: overlayOpacity }} // ✅ 기존 오버레이 그대로 유지
+        style={{ opacity: overlayOpacity*0.7 }} // ✅ 기존 오버레이 그대로 유지
       />
         </>
       )}
