@@ -16,7 +16,7 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
       style={{
         background: !useImageBackground
           ? gradientBackground
-          : 'transparent', // ✅ 배경 투명으로 변경
+          : 'black',
       }}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -27,15 +27,8 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
           <img
             src={imageBase64}
             alt="Poem Background"
-            className="absolute inset-0 w-full h-full object-fill opacity-90 blur-[4px]" // ✅ object-fill 적용
-            style={{
-              filter: 'blur(4px)',
-              objectPosition: 'center', // ✅ 중앙 정렬
-            }}
-          />
-          <div
-            className="absolute inset-0 bg-black"
-            style={{ opacity: overlayOpacity }} // ✅ 오버레이 유지
+            className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
+            style={{ filter: 'blur(4px)' }}
           />
         </>
       )}
@@ -99,11 +92,12 @@ export default function ResultPage() {
     'linear-gradient(135deg, #fda4af 0%, #fb7185 100%)',
   ];
 
+  // 시 길이에 따른 기본 텍스트 크기 결정 함수
   const getDefaultTextSize = (poemText) => {
     const length = poemText.replace(/\n/g, '').length;
-    if (length > 250) return 20;
-    if (length > 150) return 30;
-    return 40;
+    if (length > 250) return 20;  // 긴 시
+    if (length > 150) return 30;  // 중간 길이
+    return 40;                   // 짧은 시
   };
 
   const [textSize, setTextSize] = useState(36);
@@ -146,6 +140,8 @@ export default function ResultPage() {
         });
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
+
+        // 시 텍스트 길이에 따라 기본 텍스트 크기 조절
         setTextSize(getDefaultTextSize(parsed.poem));
       } catch {
         alert('시 찾기에 실패했습니다.');
@@ -214,6 +210,7 @@ export default function ResultPage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
+      {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
       <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
         <span className="font-semibold text-sm font-noto">📜 시가 필요할 때</span>
         <motion.div
@@ -303,7 +300,10 @@ export default function ResultPage() {
             ))}
           </div>
 
+          {/* 슬라이더 컨트롤 - 가로 고정 */}
           <div className="w-full max-w-2xl mt-6 mb-10 flex flex-row justify-center gap-8 items-center">
+
+            {/* 배경 어둡기 */}
             <div className="flex flex-col items-center flex-1">
               <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
                 🌒
@@ -319,6 +319,7 @@ export default function ResultPage() {
               />
             </div>
 
+            {/* 텍스트 크기 */}
             <div className="flex flex-col items-center flex-1">
               <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
                 ✍️
@@ -333,6 +334,7 @@ export default function ResultPage() {
                 className="w-full cursor-pointer accent-indigo-500"
               />
             </div>
+
           </div>
 
           <p className="mt-6 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify max-w-2xl font-noto">
