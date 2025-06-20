@@ -66,34 +66,31 @@ export default function UploadPage() {
     setIsDarkMode(prev => !prev);
   };
 
-  // 수정된 handleFileChange: 리사이즈 후 base64 세팅
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // 수정된 handleFileChange (loading 제거)
+const handleFileChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    try {
-      setLoading(true);
-      const resizedBase64 = await resizeImage(file);
-      setBase64Image(resizedBase64);
-      setSelectedImage(URL.createObjectURL(file));
-    } catch (error) {
-      alert('이미지 처리 중 오류가 발생했습니다.');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const resizedBase64 = await resizeImage(file);
+    setBase64Image(resizedBase64);
+    setSelectedImage(URL.createObjectURL(file));
+  } catch (error) {
+    alert('이미지 처리 중 오류가 발생했습니다.');
+    console.error(error);
+  }
+};
 
   const handleGeneratePoem = () => {
-    if (!base64Image && !story.trim() && !moodTag.trim()) {
-      alert('사진, 사연, 또는 감정을 입력해 주세요.');
-      return;
-    }
-    setLoading(true);
-    navigate('/result', {
-      state: { imageBase64: base64Image, moodTag, story },
-    });
-  };
+  if (!base64Image && !story.trim() && !moodTag.trim()) {
+    alert('사진, 사연, 또는 감정을 입력해 주세요.');
+    return;
+  }
+  setLoading(true); // 버튼 클릭 시에만 loading 활성화
+  navigate('/result', {
+    state: { imageBase64: base64Image, moodTag, story },
+  });
+};
 
   const moodOptions = ['평온', '기쁨', '슬픔', '분노', '감사', '설렘'];
 
