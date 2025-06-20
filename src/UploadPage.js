@@ -86,7 +86,7 @@ export default function UploadPage() {
 </div>
 
 
-{/* 사연 입력 + 사진 추가 버튼 영역 */}
+{/* 사연 입력 + 사진 섬네일 + 사진 추가 버튼 영역 */}
 <div className="w-full max-w-xl mb-8 flex flex-col sm:flex-row items-center sm:items-stretch gap-3">
 
   {/* 사연 입력창 */}
@@ -104,6 +104,28 @@ export default function UploadPage() {
     `}
   />
 
+  {/* 사진 섬네일 (있을 때만) */}
+  {selectedImage && (
+    <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md">
+      <img
+        src={selectedImage}
+        alt="Selected thumbnail"
+        className="w-full h-full object-cover"
+      />
+      <button
+        type="button"
+        onClick={() => {
+          setSelectedImage(null);
+          setBase64Image('');
+        }}
+        className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full bg-black bg-opacity-60 text-white text-xs font-bold hover:bg-opacity-80 transition"
+        aria-label="사진 제거"
+      >
+        ×
+      </button>
+    </div>
+  )}
+
   {/* 사진 추가 버튼 */}
   <button
     onClick={() => document.getElementById('file-upload').click()}
@@ -113,6 +135,7 @@ export default function UploadPage() {
     <Image size={24} />
   </button>
 </div>
+
       <input
         type="file"
         accept="image/*"
