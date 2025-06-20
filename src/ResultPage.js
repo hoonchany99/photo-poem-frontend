@@ -30,6 +30,10 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
             className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
             style={{ filter: 'blur(4px)' }}
           />
+          <div
+  className="absolute inset-0 bg-black"
+  style={{ opacity: overlayOpacity }}
+/>
         </>
       )}
 
