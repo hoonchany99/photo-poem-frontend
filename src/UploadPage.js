@@ -68,6 +68,23 @@ export default function UploadPage() {
       <h1 className="text-4xl font-semibold mb-8 text-center tracking-wide">📜 시가 필요할 때</h1>
 
       {/* 기분 태그 */}
+<div className="w-full max-w-xl mb-6 grid grid-cols-3 grid-rows-2 gap-4 justify-center
+                sm:flex sm:flex-wrap sm:justify-center sm:gap-4">
+  {moodOptions.map((mood) => (
+    <button
+      key={mood}
+      onClick={() => setMoodTag(mood)}
+      className={`px-6 py-2 rounded-3xl font-semibold shadow-md transition-all duration-300 ${
+        moodTag === mood
+          ? 'bg-indigo-600 text-white scale-105'
+          : 'bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:scale-105'
+      }`}
+    >
+      {mood}
+    </button>
+  ))}
+</div>
+
       {/* 사연 입력창 + 사진 추가 버튼 부분 (모바일 세로, PC 가로) */}
 <div className="w-full max-w-xl mb-8 flex flex-col space-y-3
                 sm:flex-row sm:space-y-0 sm:space-x-3 sm:items-center">
