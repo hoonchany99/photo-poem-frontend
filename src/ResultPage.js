@@ -250,16 +250,19 @@ export default function ResultPage() {
         </div>
       ) : (
         <>
-          <PoemCard
-            useImageBackground={useImageBackground}
-            imageBase64={imageBase64}
-            poem={poem}
-            isDarkMode={isDarkMode}
-            cardRef={cardRef}
-            overlayOpacity={overlayOpacity}
-            textSize={textSize}
-            selectedGradient={selectedGradient}
-          />
+          <div className="mt-12">
+            <PoemCard
+              useImageBackground={useImageBackground}
+              imageBase64={imageBase64}
+              poem={poem}
+              isDarkMode={isDarkMode}
+              cardRef={cardRef}
+              overlayOpacity={overlayOpacity}
+              textSize={textSize}
+              selectedGradient={selectedGradient}
+            />
+          </div>
+          
 
           <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
             {imageBase64 && (
