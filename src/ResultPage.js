@@ -99,9 +99,9 @@ export default function ResultPage() {
   // 시 길이에 따른 기본 텍스트 크기 결정 함수
   const getDefaultTextSize = (poemText) => {
     const length = poemText.replace(/\n/g, '').length;
-    if (length > 250) return 28;  // 긴 시
-    if (length > 150) return 32;  // 중간 길이
-    return 36;                   // 짧은 시
+    if (length > 250) return 20;  // 긴 시
+    if (length > 150) return 30;  // 중간 길이
+    return 40;                   // 짧은 시
   };
 
   const [textSize, setTextSize] = useState(36);
@@ -187,7 +187,7 @@ export default function ResultPage() {
   const loadingMessages = [
     '시 찾는 중... ✨',
     '잠시만 기다려 주세요... ⏳',
-    '마음에 드는 시를 찾고 있어요... 💌',
+    '감성가득 시 고르는 중... 💌',
     '곧 아름다운 시가 도착합니다... 🌸',
   ];
 
@@ -216,7 +216,7 @@ export default function ResultPage() {
     >
       {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
       <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
-        <span className="font-semibold text-sm">📜 시가 필요할 때</span>
+        <span className="font-semibold text-sm font-noto">📜 시가 필요할 때</span>
         <motion.div
           className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 shadow-lg cursor-pointer"
           onClick={toggleDarkMode}
@@ -330,7 +330,7 @@ export default function ResultPage() {
               </label>
               <input
                 type="range"
-                min={24}
+                min={10}
                 max={56}
                 step={0.1}
                 value={textSize}
