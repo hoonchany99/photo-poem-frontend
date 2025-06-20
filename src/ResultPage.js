@@ -25,14 +25,19 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
       {useImageBackground && imageBase64 && (
         <>
           <img
-            src={imageBase64}
-            alt="Poem Background"
-            className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
-            style={{ filter: 'blur(4px)' }}
-          />
+  src={imageBase64}
+  alt="Poem Background"
+  className="absolute inset-0 w-[110%] h-[110%] object-fill opacity-90 blur-[4px]"
+  style={{
+    filter: 'blur(4px)',
+    objectPosition: 'center',
+    left: '-5%',
+    top: '-5%',
+  }}
+/>
           <div
         className="absolute inset-0 bg-black"
-        style={{ opacity: overlayOpacity*0.7 }} // ✅ 기존 오버레이 그대로 유지
+        style={{ opacity: overlayOpacity*0.5 }} // ✅ 기존 오버레이 그대로 유지
       />
         </>
       )}
