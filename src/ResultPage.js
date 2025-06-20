@@ -27,12 +27,10 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
           <img
   src={imageBase64}
   alt="Poem Background"
-  className="absolute inset-0 w-[110%] h-[110%] object-fill opacity-90 blur-[4px]"
+  className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-90 blur-[4px]"
   style={{
     filter: 'blur(4px)',
-    objectPosition: 'center',
-    left: '-5%',
-    top: '-5%',
+    objectPosition: 'center center',
   }}
 />
           <div
