@@ -174,7 +174,6 @@ export default function ResultPage() {
       try {
         await navigator.share({
           title: '시가 필요할 때',
-          text: `${poem.title} - ${poem.author}`,
           url: window.location.href,
         });
       } catch (err) {
