@@ -42,7 +42,7 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
       >
         {/* 로고 */}
         <span
-          className="absolute top-6 right-6 opacity-90 drop-shadow-lg select-none font-semibold text-sm sm:text-lg"
+          className="absolute top-6 right-6 opacity-90 drop-shadow-lg select-none font-semibold text-xs sm:text-base"
           style={{ userSelect: 'none' }}
         >
           📜 시가 필요할 때
@@ -97,7 +97,7 @@ export default function ResultPage() {
   ];
 
   const [overlayOpacity, setOverlayOpacity] = useState(0.4);
-  const [textSize, setTextSize] = useState(40);
+  const [textSize, setTextSize] = useState(36); // 기본 크기 조금 줄임
   const [selectedGradient, setSelectedGradient] = useState(gradientOptions[0]);
 
   useEffect(() => {
@@ -203,8 +203,9 @@ export default function ResultPage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
+      {/* 다크모드 버튼 - 시카드 바로 위쪽에 배치 */}
       <div
-        className="absolute top-5 right-16 cursor-pointer select-none z-50"
+        className="absolute top-2 right-5 cursor-pointer select-none z-50"
         onClick={toggleDarkMode}
         aria-label="Toggle dark mode"
         title="다크 모드 토글"
