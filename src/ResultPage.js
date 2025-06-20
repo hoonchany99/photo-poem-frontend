@@ -12,7 +12,7 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
   return (
     <motion.div
       ref={cardRef}
-      className="w-[700px] h-[900px] relative overflow-hidden shadow-2xl rounded-3xl mx-auto"
+      className="max-w-[90vw] w-[700px] h-auto aspect-[7/9] relative overflow-hidden shadow-2xl rounded-3xl mx-auto"
       style={{
         background: !useImageBackground
           ? gradientBackground
@@ -173,14 +173,15 @@ export default function ResultPage() {
 
   return (
     <motion.div
-      ref={cardRef}
-  className="max-w-[90vw] w-[700px] h-auto aspect-[7/9] relative overflow-hidden shadow-2xl rounded-3xl mx-auto"
-  style={{
-    background: !useImageBackground ? gradientBackground : 'black',
-  }}
-  initial={{ opacity: 0, scale: 0.9 }}
-  animate={{ opacity: 1, scale: 1 }}
-  transition={{ duration: 0.7, ease: 'easeOut' }}
+      className={`min-h-screen p-8 flex flex-col items-center justify-center transition-colors duration-700 ${
+        isDarkMode
+          ? 'dark bg-gray-900 text-white'
+          : 'bg-gradient-to-b from-[#FAF5E4] to-[#FDF6E3] text-black'
+      } relative`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
     >
       <div
         className="absolute top-5 right-5 cursor-pointer select-none z-50"
@@ -270,41 +271,42 @@ export default function ResultPage() {
             ))}
           </div>
 
+          {/* 슬라이더 컨트롤 - 가로 고정 */}
           <div className="w-full max-w-2xl mt-6 mb-10 flex flex-row justify-center gap-8 items-center">
 
-  {/* 배경 어둡기 */}
-  <div className="flex flex-col items-center flex-1">
-    <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
-      🌒
-    </label>
-    <input
-      type="range"
-      min={0}
-      max={0.8}
-      step={0.001}
-      value={overlayOpacity}
-      onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
-      className="w-full cursor-pointer accent-indigo-500"
-    />
-  </div>
+            {/* 배경 어둡기 */}
+            <div className="flex flex-col items-center flex-1">
+              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
+                🌒
+              </label>
+              <input
+                type="range"
+                min={0}
+                max={0.8}
+                step={0.001}
+                value={overlayOpacity}
+                onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
+                className="w-full cursor-pointer accent-indigo-500"
+              />
+            </div>
 
-  {/* 텍스트 크기 */}
-  <div className="flex flex-col items-center flex-1">
-    <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
-      ✍️
-    </label>
-    <input
-      type="range"
-      min={24}
-      max={56}
-      step={0.1}
-      value={textSize}
-      onChange={(e) => setTextSize(parseFloat(e.target.value))}
-      className="w-full cursor-pointer accent-indigo-500"
-    />
-  </div>
+            {/* 텍스트 크기 */}
+            <div className="flex flex-col items-center flex-1">
+              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
+                ✍️
+              </label>
+              <input
+                type="range"
+                min={24}
+                max={56}
+                step={0.1}
+                value={textSize}
+                onChange={(e) => setTextSize(parseFloat(e.target.value))}
+                className="w-full cursor-pointer accent-indigo-500"
+              />
+            </div>
 
-</div>
+          </div>
 
           <p className="mt-6 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify max-w-2xl font-noto">
             {poem.message}
