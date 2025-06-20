@@ -96,9 +96,17 @@ export default function ResultPage() {
     'linear-gradient(135deg, #fda4af 0%, #fb7185 100%)',
   ];
 
-  const [overlayOpacity, setOverlayOpacity] = useState(0.4);
-  const [textSize, setTextSize] = useState(36); // 기본 크기 조금 줄임
+  // 시 길이에 따른 기본 텍스트 크기 결정 함수
+  const getDefaultTextSize = (poemText) => {
+    const length = poemText.replace(/\n/g, '').length;
+    if (length > 250) return 28;  // 긴 시
+    if (length > 150) return 32;  // 중간 길이
+    return 36;                   // 짧은 시
+  };
+
+  const [textSize, setTextSize] = useState(36);
   const [selectedGradient, setSelectedGradient] = useState(gradientOptions[0]);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.4);
 
   useEffect(() => {
     document.body.style.backgroundColor = isDarkMode ? '#111827' : '';
@@ -136,6 +144,9 @@ export default function ResultPage() {
         });
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
+
+        // 시 텍스트 길이에 따라 기본 텍스트 크기 조절
+        setTextSize(getDefaultTextSize(parsed.poem));
       } catch {
         alert('시 찾기에 실패했습니다.');
       }
@@ -203,15 +214,14 @@ export default function ResultPage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
-      {/* 다크모드 버튼 - 시카드 바로 위쪽에 배치 */}
-      <div
-        className="absolute top-2 right-5 cursor-pointer select-none z-50"
-        onClick={toggleDarkMode}
-        aria-label="Toggle dark mode"
-        title="다크 모드 토글"
-      >
+      {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
+      <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
+        <span className="font-semibold text-sm">📜 시가 필요할 때</span>
         <motion.div
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 shadow-lg"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 shadow-lg cursor-pointer"
+          onClick={toggleDarkMode}
+          aria-label="Toggle dark mode"
+          title="다크 모드 토글"
           whileTap={{ scale: 0.85 }}
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         >
@@ -262,7 +272,6 @@ export default function ResultPage() {
               selectedGradient={selectedGradient}
             />
           </div>
-          
 
           <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
             {imageBase64 && (
