@@ -87,8 +87,7 @@ export default function UploadPage() {
 
 
 {/* 사연 입력 + 사진 섬네일 + 사진 추가 버튼 영역 */}
-{/* 사연 입력 + 사진 섬네일 + 사진 추가 버튼 영역 */}
-<div className="w-full max-w-xl mb-8 flex flex-col gap-3">
+<div className="w-full max-w-xl mb-8 flex flex-col sm:flex-row sm:items-center gap-3">
 
   {/* 사연 입력창 */}
   <input
@@ -96,7 +95,7 @@ export default function UploadPage() {
     placeholder="짧은 사연이나 사진을 입력해 보세요."
     value={story}
     onChange={(e) => setStory(e.target.value)}
-    className={`w-full py-4 px-6 rounded-full border shadow-lg backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 font-noto focus:outline-none focus:ring-4 focus:ring-indigo-400 transition-all
+    className={`flex-grow py-4 px-6 rounded-full border shadow-lg backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 font-noto focus:outline-none focus:ring-4 focus:ring-indigo-400 transition-all
       ${
         isDarkMode
           ? 'border-gray-600 text-white placeholder-gray-400'
@@ -105,9 +104,8 @@ export default function UploadPage() {
     `}
   />
 
-  {/* 썸네일과 사진 추가 버튼을 한 줄에 묶음 */}
-  <div className="flex items-center gap-3">
-
+  {/* 썸네일 + 사진 추가 버튼 그룹 */}
+  <div className="flex gap-3 justify-center sm:justify-start mt-3 sm:mt-0">
     {/* 사진 섬네일 (있을 때만) */}
     {selectedImage && (
       <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md">
