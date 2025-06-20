@@ -85,14 +85,17 @@ export default function UploadPage() {
   ))}
 </div>
 
-      {/* 사연 입력창 + 사진 추가 버튼 부분 (모바일 세로, PC 가로) */}
-<div className="w-full max-w-xl mb-4">
+
+{/* 사연 입력 + 사진 추가 버튼 영역 */}
+<div className="w-full max-w-xl mb-8 flex flex-col sm:flex-row items-center sm:items-stretch gap-3">
+
+  {/* 사연 입력창 */}
   <input
     type="text"
     placeholder="짧은 사연이나 사진을 입력해 보세요."
     value={story}
     onChange={(e) => setStory(e.target.value)}
-    className={`w-full py-4 px-6 rounded-full border shadow-lg backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 font-noto focus:outline-none focus:ring-4 focus:ring-indigo-400 transition-all
+    className={`flex-grow py-4 px-6 rounded-full border shadow-lg backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 font-noto focus:outline-none focus:ring-4 focus:ring-indigo-400 transition-all
       ${
         isDarkMode
           ? 'border-gray-600 text-white placeholder-gray-400'
@@ -100,43 +103,16 @@ export default function UploadPage() {
       }
     `}
   />
-</div>
 
-{/* 사진 추가 버튼과 썸네일 (모바일에서만 같은 행, PC는 블록으로 유지) */}
-<div className="w-full max-w-xl mb-8
-  flex flex-col items-center gap-3
-  sm:flex-row sm:justify-center sm:gap-4
-">
-  {selectedImage && (
-    <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md mx-auto sm:mx-0">
-      <img
-        src={selectedImage}
-        alt="Selected thumbnail"
-        className="w-full h-full object-cover"
-      />
-      <button
-        type="button"
-        onClick={() => {
-          setSelectedImage(null);
-          setBase64Image('');
-        }}
-        className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full bg-black bg-opacity-60 text-white text-xs font-bold hover:bg-opacity-80 transition"
-        aria-label="사진 제거"
-      >
-        ×
-      </button>
-    </div>
-  )}
-
+  {/* 사진 추가 버튼 */}
   <button
     onClick={() => document.getElementById('file-upload').click()}
-    className="w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-700 transition text-white shadow-lg flex items-center justify-center mx-auto sm:mx-0"
+    className="w-14 h-14 rounded-full bg-indigo-600 hover:bg-indigo-700 transition text-white shadow-lg flex items-center justify-center sm:mt-0 mt-3"
     aria-label="사진 추가하기"
   >
     <Image size={24} />
   </button>
 </div>
-
       <input
         type="file"
         accept="image/*"
