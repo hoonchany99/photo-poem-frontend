@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { useTheme } from './context/ThemeContext';
-import { ArrowLeft, Share2, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Share2, Image as ImageIcon, RefreshCcw,Download } from 'lucide-react';
 
 function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, overlayOpacity, textSize, selectedGradient }) {
   const gradientBackground = `linear-gradient(rgba(0,0,0,${overlayOpacity}), rgba(0,0,0,${overlayOpacity})), ${selectedGradient}`;
@@ -27,15 +27,15 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
           <img
             src={imageBase64}
             alt="Poem Background"
-            className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-90 blur-[6px]"
+            className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-90 blur-[4px]"
             style={{
-              filter: 'blur(6px)',
+              filter: 'blur(4px)',
               objectPosition: 'center center',
             }}
           />
           <div
             className="absolute inset-0 bg-black"
-            style={{ opacity: overlayOpacity * 0.7 }}
+            style={{ opacity: overlayOpacity * 0.5 }}
           />
         </>
       )}
@@ -99,16 +99,17 @@ export default function ResultPage() {
     'linear-gradient(135deg, #fda4af 0%, #fb7185 100%)',
   ];
 
+  // 시 길이에 따른 기본 텍스트 크기 결정 함수
   const getDefaultTextSize = (poemText) => {
     const length = poemText.replace(/\n/g, '').length;
-    if (length > 250) return 20;
-    if (length > 150) return 30;
-    return 40;
+    if (length > 250) return 20;  // 긴 시
+    if (length > 150) return 30;  // 중간 길이
+    return 40;                   // 짧은 시
   };
 
   const [textSize, setTextSize] = useState(36);
   const [selectedGradient, setSelectedGradient] = useState(gradientOptions[0]);
-  const [overlayOpacity, setOverlayOpacity] = useState(0.4);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.3);
 
   useEffect(() => {
     document.body.style.backgroundColor = isDarkMode ? '#111827' : '';
@@ -146,6 +147,8 @@ export default function ResultPage() {
         });
         const parsed = parsePoemResponse(res.data.poem);
         setPoem(parsed);
+
+        // 시 텍스트 길이에 따라 기본 텍스트 크기 조절
         setTextSize(getDefaultTextSize(parsed.poem));
       } catch {
         alert('시 찾기에 실패했습니다.');
@@ -214,7 +217,7 @@ export default function ResultPage() {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
-      {/* 상단 바 - 로고 & 다크모드 버튼 (항상 보임) */}
+      {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
       <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
         <span
           className="font-semibold text-sm font-noto cursor-pointer"
@@ -236,7 +239,7 @@ export default function ResultPage() {
 
       {loading ? (
         <div
-          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-40 px-4"
+          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-50 px-4"
           style={{ overflow: 'hidden' }}
         >
           <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
@@ -266,7 +269,7 @@ export default function ResultPage() {
       ) : (
         <>
           <div className="mt-12">
-            <PoemCard
+            <PoemCard 
               useImageBackground={useImageBackground}
               imageBase64={imageBase64}
               poem={poem}
@@ -278,7 +281,7 @@ export default function ResultPage() {
             />
           </div>
 
-                    <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
+          <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
             {imageBase64 && (
               <button
                 onClick={() => setUseImageBackground(true)}
@@ -317,15 +320,15 @@ export default function ResultPage() {
               <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
                 🌒
               </label>
-             <input
-  type="range"
-  min={0}
-  max={0.8}
-  step={0.001}
-  value={overlayOpacity}
-  onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
-  className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
-/>
+              <input
+                type="range"
+                min={0}
+                max={0.8}
+                step={0.001}
+                value={overlayOpacity}
+                onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
+                className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
+              />
             </div>
 
             {/* 텍스트 크기 */}
@@ -334,14 +337,14 @@ export default function ResultPage() {
                 ✍️
               </label>
               <input
-  type="range"
-  min={10}
-  max={56}
-  step={0.1}
-  value={textSize}
-  onChange={(e) => setTextSize(parseFloat(e.target.value))}
-  className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
-/>
+                type="range"
+                min={10}
+                max={56}
+                step={0.1}
+                value={textSize}
+                onChange={(e) => setTextSize(parseFloat(e.target.value))}
+                className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
+              />
             </div>
 
           </div>
@@ -353,18 +356,29 @@ export default function ResultPage() {
           <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md mx-auto mt-10">
             <button
               onClick={saveAsImage}
-              className="flex-1 px-8 py-5 bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold rounded-3xl shadow-md hover:from-indigo-700 hover:to-purple-800 transition text-xl"
+              className="font-noto flex-1 px-8 py-5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white font-semibold rounded-3xl shadow-md hover:from-purple-800 hover:to-indigo-700 transition text-xl flex items-center justify-center gap-2"
             >
-              시 카드 저장하기
+              <Download size={20} /> 저장하기
             </button>
 
             <button
               onClick={sharePoem}
-              className="flex-1 px-8 py-5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white font-semibold rounded-3xl shadow-md hover:from-purple-800 hover:to-indigo-700 transition text-xl flex items-center justify-center gap-2"
+              className="font-noto flex-1 px-8 py-5 bg-gradient-to-r from-purple-700 to-indigo-600 text-white font-semibold rounded-3xl shadow-md hover:from-purple-800 hover:to-indigo-700 transition text-xl flex items-center justify-center gap-2"
             >
               <Share2 size={20} /> 공유하기
             </button>
           </div>
+
+          {/* 시 다시 찾기 버튼 */}
+          <button
+  onClick={() => window.location.reload()}
+  aria-label="시 다시 찾기"
+  title="시 다시 찾기"
+  className="font-noto mt-10 mx-auto flex items-center justify-center px-6 py-3 rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold shadow-md hover:from-indigo-700 hover:to-purple-800 transition text-xl gap-2 select-none"
+>
+  <RefreshCcw size={24} />
+  다시 시도
+</button>
 
           <button
             onClick={() => navigate(-1)}
