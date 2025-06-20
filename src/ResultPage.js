@@ -37,18 +37,37 @@ function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, 
         </>
       )}
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-12 py-16 text-white font-noto">
-        <span className="absolute top-6 right-6 text-lg font-semibold opacity-90 drop-shadow-lg select-none">
+      <div
+        className="relative z-10 w-full h-full flex flex-col items-center justify-center text-white font-noto px-12 py-16 sm:px-12 sm:py-16 px-6 py-10"
+      >
+        {/* 로고 */}
+        <span
+          className="absolute top-6 right-6 text-lg font-semibold opacity-90 drop-shadow-lg select-none sm:text-lg text-sm"
+        >
           📜 시가 필요할 때
         </span>
 
-        <h2 className="text-5xl font-extrabold mb-4 text-center drop-shadow-2xl" style={{ fontSize: `${textSize}px` }}>
+        {/* 제목 */}
+        <h2
+          className="text-5xl font-extrabold mb-4 text-center drop-shadow-2xl sm:text-5xl text-3xl"
+          style={{ fontSize: `${textSize}px` }}
+        >
           {poem.title}
         </h2>
-        <h3 className="text-xl font-medium mb-10 text-center drop-shadow-lg" style={{ fontSize: `${textSize * 0.6}px` }}>
+
+        {/* 작가 */}
+        <h3
+          className="text-xl font-medium mb-10 text-center drop-shadow-lg sm:text-xl text-lg"
+          style={{ fontSize: `${textSize * 0.6}px` }}
+        >
           {poem.author}
         </h3>
-        <div className="leading-relaxed whitespace-pre-wrap text-center drop-shadow-md" style={{ fontSize: `${textSize * 0.5}px` }}>
+
+        {/* 시 본문 */}
+        <div
+          className="leading-relaxed whitespace-pre-wrap text-center drop-shadow-md sm:text-base text-sm"
+          style={{ fontSize: `${textSize * 0.5}px` }}
+        >
           {poem.poem}
         </div>
       </div>
