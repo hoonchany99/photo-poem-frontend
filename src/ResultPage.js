@@ -165,15 +165,22 @@ export default function ResultPage() {
   }, [isDarkMode, loading]);
 
   function parsePoemResponse(text) {
-    const [title, author, ...rest] = text.split('\n');
-    const restText = rest.join('\n').trim();
+  const lines = text.split('\n').map(line => line.trim());
 
-    const parts = restText.split('\n\n');
-    const poemRaw = parts[0].replace(/\\n/g, '\n').trim();
-    const message = parts[1] ? parts[1].trim() : '';
+  if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
 
-    return { title, author, poem: poemRaw, message };
-  }
+  const title = lines[0];
+  const author = lines[1];
+
+  // 2번째 줄 이후부터 빈 줄(연과 연 사이)로 나누어 시 본문과 설명 분리
+  const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
+
+  // 마지막 덩어리는 설명으로 간주
+  const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
+  const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
+
+  return { title, author, poem, message };
+}
 
   useEffect(() => {
     if (!imageBase64 && !story.trim() && !moodTag.trim()) {
@@ -184,12 +191,12 @@ export default function ResultPage() {
     async function fetchPoem() {
       setLoading(true);
       try {
-        const res = await axios.post(process.env.REACT_APP_API_URL, {
-          imageBase64,
-          moodTag,
-          story,
+        const res = await axios.post('http://localhost:3001/api/recommend', {
+          base64Image: imageBase64,
+          queryText: story,
+          moodTag: moodTag,
         });
-        const parsed = parsePoemResponse(res.data.poem);
+        const parsed = parsePoemResponse(res.data.poemText);
         setPoem(parsed);
 
         // 시 텍스트 길이에 따라 기본 텍스트 크기 조절
