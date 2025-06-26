@@ -39,9 +39,10 @@ function PoemCard({
         </>
       )}
 
-      {/* 카드 전체를 팬 가능하도록 수정 */}
+      {/* 카드 전체에 텍스트 드래그 제한 (dragConstraints) 설정 */}
       <div className="absolute inset-0 flex items-center justify-center">
- <TransformWrapper
+        {/* 텍스트만 줌 가능하게 감싸기 */}
+        <TransformWrapper
   wheel={{ step: 0.1 }}
   pinch={{ step: 5 }}
   doubleClick={{ disabled: true }}
@@ -49,37 +50,38 @@ function PoemCard({
   maxScale={3}
   initialScale={1}
   centerOnInit={false}
-  limitToBounds={false} // 
+  limitToBounds={false}
 >
   <TransformComponent
     wrapperStyle={{ width: '100%', height: '100%' }}
     contentStyle={{ width: '100%', height: '100%' }}
   >
-    {/* 팬 대상 영역을 카드 크기로 고정 */}
     <motion.div
       className="relative w-full h-full z-10 flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16 cursor-move"
-      drag
-      dragElastic={0.2}
-      dragMomentum={false}
-      dragConstraints={false} // dragConstraints 제거
       style={{ touchAction: 'none' }}
       whileTap={{ scale: 1.02 }}
     >
       <h2
         className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
-        style={{ fontSize: `${textSize}px`,textAlign: 'left',
+        style={{
+          fontSize: `${textSize}px`,
+          textAlign: 'left',
           color: 'white',
           width: '100%',
-          maxWidth: '600px', }}
+          maxWidth: '600px',
+        }}
       >
         {poem.title}
       </h2>
       <h3
         className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
-        style={{ fontSize: `${textSize * 0.6}px` ,textAlign: 'left',
+        style={{
+          fontSize: `${textSize * 0.6}px`,
+          textAlign: 'left',
           color: 'white',
           width: '100%',
-          maxWidth: '600px',}}
+          maxWidth: '600px',
+        }}
       >
         {poem.author}
       </h3>
