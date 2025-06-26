@@ -5,79 +5,83 @@ import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { useTheme } from './context/ThemeContext';
 import { ArrowLeft, Share2, Image as ImageIcon, RefreshCcw,Download } from 'lucide-react';
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-function PoemCard({ useImageBackground, imageBase64, poem, isDarkMode, cardRef, overlayOpacity, textSize, selectedGradient }) {
+function PoemCard({
+  useImageBackground,
+  imageBase64,
+  poem,
+  isDarkMode,
+  cardRef,
+  overlayOpacity,
+  textSize,
+  selectedGradient,
+}) {
   const gradientBackground = `linear-gradient(rgba(0,0,0,${overlayOpacity}), rgba(0,0,0,${overlayOpacity})), ${selectedGradient}`;
 
   return (
     <motion.div
-      ref={cardRef}
-      className="max-w-[90vw] w-[700px] h-auto aspect-[7/9] relative overflow-hidden shadow-2xl rounded-3xl mx-auto"
-      style={{
-        background: !useImageBackground
-          ? gradientBackground
-          : selectedGradient,
-      }}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.7, ease: 'easeOut' }}
+  ref={cardRef}
+  className="max-w-[90vw] w-[700px] aspect-[7/9] relative shadow-2xl rounded-none mx-auto overflow-hidden"
+  style={{
+    background: !useImageBackground ? gradientBackground : selectedGradient,
+  }}
+>
+  {useImageBackground && imageBase64 && (
+    <>
+      <img
+        src={imageBase64}
+        alt="Poem Background"
+        className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
+        style={{ filter: 'blur(4px)', objectPosition: 'center center' }}
+      />
+      <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity * 0.5 }} />
+    </>
+  )}
+
+  {/* 드래그 제한을 정확하게 인식하도록 absolute가 아닌 inset-0 + flex 사용 */}
+  <div className="absolute inset-0 flex items-center justify-center">
+    <motion.div
+      className="z-10 flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16 cursor-move"
+      drag
+      dragElastic={0.2}
+      dragMomentum={false}
+      dragConstraints={cardRef}
+      style={{ touchAction: 'none' }}
+      whileTap={{ scale: 1.02 }}
     >
-      {useImageBackground && imageBase64 && (
-        <>
-          <img
-            src={imageBase64}
-            alt="Poem Background"
-            className="absolute inset-0 w-[120%] h-[120%] object-cover opacity-90 blur-[4px]"
-            style={{
-              filter: 'blur(4px)',
-              objectPosition: 'center center',
-            }}
-          />
-          <div
-            className="absolute inset-0 bg-black"
-            style={{ opacity: overlayOpacity * 0.5 }}
-          />
-        </>
-      )}
-
-      <div
-        className="relative z-10 w-full h-full flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16"
+      <h2
+        className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
+        style={{ fontSize: `${textSize}px` }}
       >
-        {/* 로고 */}
-        <span
-          className="absolute top-6 right-6 opacity-90 drop-shadow-lg select-none font-semibold text-xs sm:text-base"
-          style={{ userSelect: 'none' }}
-        >
-          📜 시가 필요할 때
-        </span>
-
-        {/* 제목 */}
-        <h2
-          className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
-          style={{ fontSize: `${textSize}px` }}
-        >
-          {poem.title}
-        </h2>
-
-        {/* 작가 */}
-        <h3
-          className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
-          style={{ fontSize: `${textSize * 0.6}px` }}
-        >
-          {poem.author}
-        </h3>
-
-        {/* 시 본문 */}
-        <div
-          className="leading-relaxed whitespace-pre-wrap text-center drop-shadow-md text-sm sm:text-base"
-          style={{ fontSize: `${textSize * 0.5}px` }}
-        >
-          {poem.poem}
-        </div>
+        {poem.title}
+      </h2>
+      <h3
+        className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
+        style={{ fontSize: `${textSize * 0.6}px` }}
+      >
+        {poem.author}
+      </h3>
+      <div
+        className="leading-relaxed whitespace-pre-wrap drop-shadow-md text-sm sm:text-base"
+        style={{
+          fontSize: `${textSize * 0.5}px`,
+          textAlign: 'left',
+          color: 'white',
+          width: '100%',
+          maxWidth: '600px',
+        }}
+      >
+        {poem.poem}
       </div>
     </motion.div>
+  </div>
+</motion.div>
   );
 }
+
+
+
 
 export default function ResultPage() {
   const location = useLocation();
