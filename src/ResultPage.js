@@ -21,44 +21,64 @@ function PoemCard({
 
   return (
     <motion.div
-  ref={cardRef}
-  className="max-w-[90vw] w-[700px] aspect-[7/9] relative shadow-2xl rounded-none mx-auto overflow-hidden"
-  style={{
-    background: !useImageBackground ? gradientBackground : selectedGradient,
-  }}
->
-  {useImageBackground && imageBase64 && (
-    <>
-      <img
-        src={imageBase64}
-        alt="Poem Background"
-        className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
-        style={{ filter: 'blur(4px)', objectPosition: 'center center' }}
-      />
-      <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity * 0.5 }} />
-    </>
-  )}
+      ref={cardRef}
+      className="max-w-[90vw] w-[700px] aspect-[7/9] relative shadow-2xl rounded-none mx-auto overflow-hidden"
+      style={{
+        background: !useImageBackground ? gradientBackground : selectedGradient,
+      }}
+    >
+      {useImageBackground && imageBase64 && (
+        <>
+          <img
+            src={imageBase64}
+            alt="Poem Background"
+            className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
+            style={{ filter: 'blur(4px)', objectPosition: 'center center' }}
+          />
+          <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity * 0.5 }} />
+        </>
+      )}
 
-  {/* 드래그 제한을 정확하게 인식하도록 absolute가 아닌 inset-0 + flex 사용 */}
-  <div className="absolute inset-0 flex items-center justify-center">
+      {/* 카드 전체를 팬 가능하도록 수정 */}
+      <div className="absolute inset-0 flex items-center justify-center">
+ <TransformWrapper
+  wheel={{ step: 0.1 }}
+  pinch={{ step: 5 }}
+  doubleClick={{ disabled: true }}
+  minScale={0.5}
+  maxScale={3}
+  initialScale={1}
+  centerOnInit={true}
+>
+  <TransformComponent
+    wrapperStyle={{ width: '100%', height: '100%' }}
+    contentStyle={{ width: '100%', height: '100%' }}
+  >
+    {/* 팬 대상 영역을 카드 크기로 고정 */}
     <motion.div
-      className="z-10 flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16 cursor-move"
+      className="relative w-full h-full z-10 flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16 cursor-move"
       drag
       dragElastic={0.2}
       dragMomentum={false}
-      dragConstraints={cardRef}
+      dragConstraints={false} // dragConstraints 제거
       style={{ touchAction: 'none' }}
       whileTap={{ scale: 1.02 }}
     >
       <h2
         className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
-        style={{ fontSize: `${textSize}px` }}
+        style={{ fontSize: `${textSize}px`,textAlign: 'left',
+          color: 'white',
+          width: '100%',
+          maxWidth: '600px', }}
       >
         {poem.title}
       </h2>
       <h3
         className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
-        style={{ fontSize: `${textSize * 0.6}px` }}
+        style={{ fontSize: `${textSize * 0.6}px` ,textAlign: 'left',
+          color: 'white',
+          width: '100%',
+          maxWidth: '600px',}}
       >
         {poem.author}
       </h3>
@@ -75,8 +95,10 @@ function PoemCard({
         {poem.poem}
       </div>
     </motion.div>
-  </div>
-</motion.div>
+  </TransformComponent>
+</TransformWrapper>
+      </div>
+    </motion.div>
   );
 }
 
