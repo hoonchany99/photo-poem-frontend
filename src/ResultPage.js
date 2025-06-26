@@ -32,12 +32,27 @@ function PoemCard({
           <img
             src={imageBase64}
             alt="Poem Background"
-            className="absolute inset-0 w-full h-full object-cover opacity-90 blur-[4px]"
-            style={{ filter: 'blur(4px)', objectPosition: 'center center' }}
+            className="absolute inset-0 w-full h-full object-cover opacity-90"
+            style={{ objectPosition: 'center center' }}
           />
           <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity * 0.5 }} />
         </>
       )}
+
+      <div
+    className="absolute bottom-4 right-4 select-none pointer-events-none"
+    style={{
+      fontFamily: "'Poppins', sans-serif",  // 예시로 트렌디한 영문 폰트, 원하시면 다른 폰트로 변경 가능
+      fontWeight: '600',
+      fontSize: '14px',
+      color: 'rgba(255, 255, 255, 0.7)',
+      userSelect: 'none',
+      letterSpacing: '0.05em',
+      textTransform: 'lowercase',
+    }}
+  >
+    @poemtimes
+  </div>
 
       {/* 카드 전체에 텍스트 드래그 제한 (dragConstraints) 설정 */}
       <div className="absolute inset-0 flex items-center justify-center">
@@ -121,11 +136,11 @@ export default function ResultPage() {
   const [useImageBackground, setUseImageBackground] = useState(Boolean(imageBase64));
 
   const gradientOptions = [
-    'linear-gradient(135deg, #e0e7ff 0%, #a5b4fc 100%)',
-    'linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%)',
-    'linear-gradient(135deg, #fef08a 0%, #fde047 100%)',
-    'linear-gradient(135deg, #bbf7d0 0%, #86efac 100%)',
-    'linear-gradient(135deg, #fda4af 0%, #fb7185 100%)',
+    'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)',
+    'linear-gradient(135deg, #d38312 0%, #a83279 100%)',
+    'linear-gradient(135deg, #FF4E50 0%, #F9D423 100%)',
+    'linear-gradient(135deg, #f2709c 0%, #ff9472 100%)',
+    'linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)'
   ];
 
   // 시 길이에 따른 기본 텍스트 크기 결정 함수
@@ -138,7 +153,7 @@ export default function ResultPage() {
 
   const [textSize, setTextSize] = useState(36);
   const [selectedGradient, setSelectedGradient] = useState(gradientOptions[0]);
-  const [overlayOpacity, setOverlayOpacity] = useState(0.3);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
 
   useEffect(() => {
     document.body.style.backgroundColor = isDarkMode ? '#111827' : '';
@@ -362,7 +377,7 @@ export default function ResultPage() {
             {/* 텍스트 크기 */}
             <div className="flex flex-col items-center flex-1">
               <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
-                ✍️
+                🔤
               </label>
               <input
                 type="range"
