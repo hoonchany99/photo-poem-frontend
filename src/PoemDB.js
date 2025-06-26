@@ -16,7 +16,7 @@ export default function AdminPoemForm() {
     setMessage(null);
 
     try {
-      const res = await axios.post('process.env.REACT_APP_API_URL'+'/poems', {
+      const res = await axios.post(process.env.REACT_APP_API_URL+'/poems', {
         title,
         author,
         excerpt,
