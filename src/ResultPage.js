@@ -48,7 +48,8 @@ function PoemCard({
   minScale={0.5}
   maxScale={3}
   initialScale={1}
-  centerOnInit={true}
+  centerOnInit={false}
+  limitToBounds={false} // 
 >
   <TransformComponent
     wrapperStyle={{ width: '100%', height: '100%' }}
