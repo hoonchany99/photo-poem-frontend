@@ -189,6 +189,7 @@ export default function ResultPage() {
     }
 
     async function fetchPoem() {
+      console.log('API URL:', process.env.REACT_APP_API_URL);
       setLoading(true);
       try {
         const res = await axios.post(process.env.REACT_APP_API_URL, {
