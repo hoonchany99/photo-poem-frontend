@@ -191,7 +191,7 @@ export default function ResultPage() {
     async function fetchPoem() {
       setLoading(true);
       try {
-        const res = await axios.post('http://localhost:3001/api/recommend', {
+        const res = await axios.post('process.env.REACT_APP_API_URL', {
           base64Image: imageBase64,
           queryText: story,
           moodTag: moodTag,
