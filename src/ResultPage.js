@@ -82,32 +82,8 @@ function PoemCard({
               style={{ touchAction: 'none' }}
               whileTap={{ scale: 1.02 }}
             >
-              <h2
-                className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
-                style={{
-                  fontSize: `${textSize}px`,
-                  textAlign: 'left',
-                  color: 'white',
-                  width: '100%',
-                  maxWidth: '600px',
-                }}
-              >
-                {poem.title}
-              </h2>
-              <h3
-                className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
-                style={{
-                  fontSize: `${textSize * 0.6}px`,
-                  textAlign: 'left',
-                  color: 'white',
-                  width: '100%',
-                  maxWidth: '600px',
-                }}
-              >
-                {poem.author}
-              </h3>
               <div
-                className="leading-relaxed whitespace-pre-wrap drop-shadow-md text-sm sm:text-base"
+                className="mb-10 leading-relaxed whitespace-pre-wrap drop-shadow-md text-sm sm:text-base"
                 style={{
                   fontSize: `${textSize * 0.5}px`,
                   textAlign: 'left',
@@ -117,6 +93,18 @@ function PoemCard({
                 }}
               >
                 {poem.poem}
+              </div>
+              <div
+                className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
+                style={{
+                  fontSize: `${textSize*0.5}px`,
+                  textAlign: 'left',
+                  color: 'white',
+                  width: '100%',
+                  maxWidth: '600px',
+                }}
+              >
+                {poem.author}, {poem.title}
               </div>
             </motion.div>
           </TransformComponent>
