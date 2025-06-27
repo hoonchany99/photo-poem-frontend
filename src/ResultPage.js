@@ -180,15 +180,26 @@ export default function ResultPage() {
   const title = lines[0];
   const author = lines[1];
 
+  // 시 본문과 설명+출처 부분 분리 (빈 줄 2개 기준)
   const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
 
-  const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
-  let messageBlock = bodyAndMessage.slice(-1)[0]?.trim() || '';
+  const poem = bodyAndMessage[0].trim();  // 시 본문 (첫 덩어리)
+  const remaining = bodyAndMessage.slice(1).join('\n\n').trim(); // 설명 + 출처
 
-  // 설명과 출처를 마지막 줄 기준으로 나누기
-  const messageLines = messageBlock.split('\n');
-  const source = messageLines.pop()?.trim() || '';
-  const message = messageLines.join('\n').trim() + '\n\n\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
+  // 설명과 출처 분리 (출처는 마지막 줄)
+  const lastNewlineIdx = remaining.lastIndexOf('\n');
+  let message = '';
+  let source = '';
+
+  if (lastNewlineIdx !== -1) {
+    message = remaining.slice(0, lastNewlineIdx).trim();
+    source = remaining.slice(lastNewlineIdx + 1).trim();
+  } else {
+    message = remaining;
+  }
+
+  // 저작권 문구는 설명 끝에 추가 (한 줄 띄우고)
+  message += '\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
 
   return { title, author, poem, message, source };
 }
@@ -437,6 +448,10 @@ useEffect(() => {
           <p className="mt-6 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify max-w-2xl font-noto">
             {poem.message}
           </p>
+
+<p className="text-sm text-gray-500 mt-2 select-text max-w-2xl font-noto">
+  {poem.source}
+  </p>
 
           <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md mx-auto mt-10">
             <button
