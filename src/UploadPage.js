@@ -9,7 +9,7 @@ function resizeImage(file, maxSize = 800) {
     const reader = new FileReader();
 
     reader.onload = (event) => {
-      const img = new Image(); // 브라우저 기본 객체 정상 사용
+      const img = new Image();
       img.onload = () => {
         let width = img.width;
         let height = img.height;
@@ -45,6 +45,31 @@ function resizeImage(file, maxSize = 800) {
   });
 }
 
+function dataURLtoFile(dataUrl, filename) {
+  const arr = dataUrl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
+async function resizeIfTooBig(base64Image) {
+  const byteSize = Math.ceil((base64Image.length * 3) / 4);
+  const MAX_SIZE = 2 * 1024 * 1024;
+
+  if (byteSize > MAX_SIZE) {
+    const file = dataURLtoFile(base64Image, 'original.jpg');
+    const resized = await resizeImage(file, 1000);
+    return resized;
+  }
+
+  return base64Image;
+}
+
 export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
@@ -72,8 +97,13 @@ export default function UploadPage() {
     if (!file) return;
 
     try {
-      setSelectedImage(URL.createObjectURL(file)); // for preview
-      setSelectedImageFile(file); // for upload
+      const resizedBase64 = await resizeImage(file);
+      const finalBase64 = await resizeIfTooBig(resizedBase64);
+      const blob = await (await fetch(finalBase64)).blob();
+      const finalFile = new File([blob], file.name, { type: 'image/jpeg' });
+
+      setSelectedImage(URL.createObjectURL(finalFile));
+      setSelectedImageFile(finalFile);
     } catch (error) {
       alert('이미지 처리 중 오류가 발생했습니다.');
       console.error(error);
@@ -93,7 +123,7 @@ export default function UploadPage() {
 
       if (selectedImageFile) {
         const formData = new FormData();
-        formData.append('image', selectedImageFile); // original file
+        formData.append('image', selectedImageFile);
         formData.append('moodTag', moodTag);
         formData.append('story', story);
 
@@ -112,7 +142,6 @@ export default function UploadPage() {
         }
       }
 
-      // Navigate regardless of image upload success or no image
       navigate('/result', {
         state: {
           imageUrl: publicUrl,
