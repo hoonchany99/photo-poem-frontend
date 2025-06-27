@@ -175,7 +175,7 @@ export default function ResultPage() {
   function parsePoemResponse(text) {
   const lines = text.split('\n').map(line => line.trim());
 
-  if (lines.length < 3) return { title: '', author: '', poem: '', message: '', source: '' };
+  if (lines.length < 3) return { title: '', author: '', poem: '', message: '', copyright: '', source: '' };
 
   const title = lines[0];
   const author = lines[1];
@@ -198,10 +198,10 @@ export default function ResultPage() {
     message = remaining;
   }
 
-  // 저작권 문구는 설명 끝에 추가 (한 줄 띄우고)
-  message += '\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
+  // 저작권 문구는 별도로 분리
+  const copyright = '※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
 
-  return { title, author, poem, message, source };
+  return { title, author, poem, message, copyright, source };
 }
 
   useEffect(() => {
@@ -449,9 +449,13 @@ useEffect(() => {
             {poem.message}
           </p>
 
+<p className="mt-4 text-sm text-gray-500 select-text max-w-2xl font-noto whitespace-pre-wrap">
+  {poem.copyright}
+</p>
+
 <p className="text-sm text-gray-500 mt-2 select-text max-w-2xl font-noto">
   {poem.source}
-  </p>
+</p>
 
           <div className="flex flex-col sm:flex-row gap-6 w-full max-w-md mx-auto mt-10">
             <button
