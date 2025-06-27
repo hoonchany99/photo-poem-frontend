@@ -173,27 +173,22 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trimEnd()); // 빈 줄 삭제 안 함
+const paragraphs = text.trim().split(/\n\s*\n/); // 문단 단위 분리
 
-  if (lines.length < 3) {
-    return { title: '', author: '', poem: '', message: '', source: '' };
-  }
+if (paragraphs.length < 3) {
+  return { title: '', author: '', poem: '', message: '', source: '' };
+}
 
-  const title = lines[0];
-  const author = lines[1];
-  const contentLines = lines.slice(2);
+const title = paragraphs[0].split('\n')[0]?.trim() || '';
+const author = paragraphs[0].split('\n')[1]?.trim() || '';
 
-  if (contentLines.length < 2) {
-    return { title, author, poem: contentLines.join('\n'), message: '', source: '' };
-  }
+const source = paragraphs[paragraphs.length - 1].trim();
+const message = paragraphs[paragraphs.length - 2].trim();
+const poemBodyParagraphs = paragraphs.slice(1, -2); // title/author 이후 ~ 설명 이전까지
 
-  const source = contentLines[contentLines.length - 1];
-  const message = contentLines[contentLines.length - 2];
-  const poemLines = contentLines.slice(0, -2);
+const poem = poemBodyParagraphs.join('\n\n');
 
-  const poem = poemLines.join('\n'); // 연 사이의 공백 유지됨
-
-  return { title, author, poem, message, source };
+return { title, author, poem, message, source };
 }
 
   useEffect(() => {
