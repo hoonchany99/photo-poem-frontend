@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { useTheme } from './context/ThemeContext';
-import { ArrowLeft, Share2, Image as ImageIcon, RefreshCcw,Download } from 'lucide-react';
+import { ArrowLeft, Share2, Image as ImageIcon, RefreshCcw, Download } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 function PoemCard({
@@ -16,6 +16,7 @@ function PoemCard({
   overlayOpacity,
   textSize,
   selectedGradient,
+  setImageLoaded, // pass setImageLoaded as prop
 }) {
   const gradientBackground = `linear-gradient(rgba(0,0,0,${overlayOpacity}), rgba(0,0,0,${overlayOpacity})), ${selectedGradient}`;
 
@@ -30,8 +31,11 @@ function PoemCard({
       {useImageBackground && imageBase64 && (
         <>
           <img
+            key={imageBase64}
             src={imageBase64}
             alt="Poem Background"
+            crossOrigin="anonymous"
+            onLoad={() => setImageLoaded(true)}
             className="absolute inset-0 w-full h-full object-cover opacity-90"
             style={{ objectPosition: 'center center' }}
           />
@@ -40,100 +44,96 @@ function PoemCard({
       )}
 
       <div
-    className="absolute bottom-4 right-4 select-none pointer-events-none"
-    style={{
-      fontFamily: "'Poppins', sans-serif",  // 예시로 트렌디한 영문 폰트, 원하시면 다른 폰트로 변경 가능
-      fontWeight: '600',
-      fontSize: '14px',
-      color: 'rgba(255, 255, 255, 0.7)',
-      userSelect: 'none',
-      letterSpacing: '0.05em',
-      textTransform: 'lowercase',
-    }}
-  >
-    @poemtimes
-  </div>
-
-      {/* 카드 전체에 텍스트 드래그 제한 (dragConstraints) 설정 */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {/* 텍스트만 줌 가능하게 감싸기 */}
-        <TransformWrapper
-  wheel={{ step: 0.1 }}
-  pinch={{ step: 5 }}
-  doubleClick={{ disabled: true }}
-  minScale={0.5}
-  maxScale={3}
-  initialScale={1}
-  centerOnInit={false}
-  limitToBounds={false}
->
-  <TransformComponent
-    wrapperStyle={{ width: '100%', height: '100%' }}
-    contentStyle={{ width: '100%', height: '100%' }}
-  >
-    <motion.div
-      className="relative w-full h-full z-10 flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16 cursor-move"
-      style={{ touchAction: 'none' }}
-      whileTap={{ scale: 1.02 }}
-    >
-      <h2
-        className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
+        className="absolute bottom-4 right-4 select-none pointer-events-none"
         style={{
-          fontSize: `${textSize}px`,
-          textAlign: 'left',
-          color: 'white',
-          width: '100%',
-          maxWidth: '600px',
+          fontFamily: "'Poppins', sans-serif",
+          fontWeight: '600',
+          fontSize: '14px',
+          color: 'rgba(255, 255, 255, 0.7)',
+          userSelect: 'none',
+          letterSpacing: '0.05em',
+          textTransform: 'lowercase',
         }}
       >
-        {poem.title}
-      </h2>
-      <h3
-        className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
-        style={{
-          fontSize: `${textSize * 0.6}px`,
-          textAlign: 'left',
-          color: 'white',
-          width: '100%',
-          maxWidth: '600px',
-        }}
-      >
-        {poem.author}
-      </h3>
-      <div
-        className="leading-relaxed whitespace-pre-wrap drop-shadow-md text-sm sm:text-base"
-        style={{
-          fontSize: `${textSize * 0.5}px`,
-          textAlign: 'left',
-          color: 'white',
-          width: '100%',
-          maxWidth: '600px',
-        }}
-      >
-        {poem.poem}
+        @poemtimes
       </div>
-    </motion.div>
-  </TransformComponent>
-</TransformWrapper>
+
+      <div className="absolute inset-0 flex items-center justify-center">
+        <TransformWrapper
+          wheel={{ step: 0.1 }}
+          pinch={{ step: 5 }}
+          doubleClick={{ disabled: true }}
+          minScale={0.5}
+          maxScale={3}
+          initialScale={1}
+          centerOnInit={false}
+          limitToBounds={false}
+        >
+          <TransformComponent
+            wrapperStyle={{ width: '100%', height: '100%' }}
+            contentStyle={{ width: '100%', height: '100%' }}
+          >
+            <motion.div
+              className="relative w-full h-full z-10 flex flex-col items-center justify-center text-white font-noto px-6 py-10 sm:px-12 sm:py-16 cursor-move"
+              style={{ touchAction: 'none' }}
+              whileTap={{ scale: 1.02 }}
+            >
+              <h2
+                className="font-extrabold mb-4 text-center drop-shadow-2xl text-3xl sm:text-5xl"
+                style={{
+                  fontSize: `${textSize}px`,
+                  textAlign: 'left',
+                  color: 'white',
+                  width: '100%',
+                  maxWidth: '600px',
+                }}
+              >
+                {poem.title}
+              </h2>
+              <h3
+                className="font-medium mb-10 text-center drop-shadow-lg text-lg sm:text-xl"
+                style={{
+                  fontSize: `${textSize * 0.6}px`,
+                  textAlign: 'left',
+                  color: 'white',
+                  width: '100%',
+                  maxWidth: '600px',
+                }}
+              >
+                {poem.author}
+              </h3>
+              <div
+                className="leading-relaxed whitespace-pre-wrap drop-shadow-md text-sm sm:text-base"
+                style={{
+                  fontSize: `${textSize * 0.5}px`,
+                  textAlign: 'left',
+                  color: 'white',
+                  width: '100%',
+                  maxWidth: '600px',
+                }}
+              >
+                {poem.poem}
+              </div>
+            </motion.div>
+          </TransformComponent>
+        </TransformWrapper>
       </div>
     </motion.div>
   );
 }
 
-
-
-
 export default function ResultPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { imageBase64, moodTag, story } = location.state || {};
+  const { imageUrl, moodTag, story } = location.state || {};
   const { isDarkMode, toggleDarkMode } = useTheme();
 
   const [poem, setPoem] = useState({ title: '', author: '', poem: '', message: '' });
   const [loading, setLoading] = useState(true);
   const cardRef = useRef();
 
-  const [useImageBackground, setUseImageBackground] = useState(Boolean(imageBase64));
+  const [useImageBackground, setUseImageBackground] = useState(Boolean(imageUrl));
+  const [imageLoaded, setImageLoaded] = useState(!useImageBackground);
 
   const gradientOptions = [
     'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)',
@@ -143,12 +143,11 @@ export default function ResultPage() {
     'linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)'
   ];
 
-  // 시 길이에 따른 기본 텍스트 크기 결정 함수
   const getDefaultTextSize = (poemText) => {
     const length = poemText.replace(/\n/g, '').length;
-    if (length > 250) return 20;  // 긴 시
-    if (length > 150) return 30;  // 중간 길이
-    return 40;                   // 짧은 시
+    if (length > 250) return 20;
+    if (length > 150) return 30;
+    return 40;
   };
 
   const [textSize, setTextSize] = useState(36);
@@ -164,26 +163,41 @@ export default function ResultPage() {
     };
   }, [isDarkMode, loading]);
 
+  useEffect(() => {
+    if (!useImageBackground) {
+      setImageLoaded(true);
+      return;
+    }
+
+    if (imageUrl) {
+      const img = new Image();
+      img.src = imageUrl;
+      if (img.complete) {
+        setImageLoaded(true);
+      } else {
+        img.onload = () => setImageLoaded(true);
+      }
+    }
+  }, [imageUrl, useImageBackground]);
+
   function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trim());
+    const lines = text.split('\n').map(line => line.trim());
 
-  if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
+    if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
 
-  const title = lines[0];
-  const author = lines[1];
+    const title = lines[0];
+    const author = lines[1];
 
-  // 2번째 줄 이후부터 빈 줄(연과 연 사이)로 나누어 시 본문과 설명 분리
-  const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
+    const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
 
-  // 마지막 덩어리는 설명으로 간주
-  const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
-  const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
+    const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
+    const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
 
-  return { title, author, poem, message };
-}
+    return { title, author, poem, message };
+  }
 
   useEffect(() => {
-    if (!imageBase64 && !story.trim() && !moodTag.trim()) {
+    if (!imageUrl && !story.trim() && !moodTag.trim()) {
       navigate('/');
       return;
     }
@@ -192,15 +206,17 @@ export default function ResultPage() {
       console.log('API URL:', process.env.REACT_APP_API_URL);
       setLoading(true);
       try {
-        const res = await axios.post(process.env.REACT_APP_API_URL+'/recommend', {
-          base64Image: imageBase64,
-          queryText: story,
-          moodTag: moodTag,
-        });
+        const res = await axios.post(
+          `${process.env.REACT_APP_API_URL}/recommend`,
+          {
+            imageUrl,
+            queryText: story,
+            moodTag,
+          }
+        );
         const parsed = parsePoemResponse(res.data.poemText);
         setPoem(parsed);
 
-        // 시 텍스트 길이에 따라 기본 텍스트 크기 조절
         setTextSize(getDefaultTextSize(parsed.poem));
       } catch {
         alert('시 찾기에 실패했습니다.');
@@ -209,7 +225,7 @@ export default function ResultPage() {
     }
 
     fetchPoem();
-  }, [imageBase64, moodTag, story, navigate]);
+  }, [imageUrl, moodTag, story, navigate]);
 
   const saveAsImage = () => {
     if (!cardRef.current) return;
@@ -288,52 +304,53 @@ export default function ResultPage() {
         </motion.div>
       </div>
 
-      {loading ? (
-  <div
-    className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-50 px-4"
-    style={{ overflow: 'hidden', touchAction: 'none' }}
-  >
-    <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
-      {loadingMessages[loadingMsgIndex]}
-    </span>
-    <svg
-      className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"
-      />
-    </svg>
-  </div>
+      {loading || (useImageBackground && !imageLoaded) ? (
+        <div
+          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-50 px-4"
+          style={{ overflow: 'hidden', touchAction: 'none' }}
+        >
+          <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
+            {loadingMessages[loadingMsgIndex]}
+          </span>
+          <svg
+            className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"
+            />
+          </svg>
+        </div>
       ) : (
         <>
           <div className="mt-12">
-            <PoemCard 
+            <PoemCard
               useImageBackground={useImageBackground}
-              imageBase64={imageBase64}
+              imageBase64={imageUrl}
               poem={poem}
               isDarkMode={isDarkMode}
               cardRef={cardRef}
               overlayOpacity={overlayOpacity}
               textSize={textSize}
               selectedGradient={selectedGradient}
+              setImageLoaded={setImageLoaded}
             />
           </div>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3 max-w-md mx-auto">
-            {imageBase64 && (
+            {imageUrl && (
               <button
                 onClick={() => setUseImageBackground(true)}
                 className={`w-12 h-12 rounded-full shadow-md flex items-center justify-center transition ${
@@ -363,14 +380,9 @@ export default function ResultPage() {
             ))}
           </div>
 
-          {/* 슬라이더 컨트롤 - 가로 고정 */}
           <div className="w-full max-w-2xl mt-6 mb-10 flex flex-row justify-center gap-8 items-center">
-
-            {/* 배경 어둡기 */}
             <div className="flex flex-col items-center flex-1">
-              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
-                🌒
-              </label>
+              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">🌒</label>
               <input
                 type="range"
                 min={0}
@@ -382,11 +394,8 @@ export default function ResultPage() {
               />
             </div>
 
-            {/* 텍스트 크기 */}
             <div className="flex flex-col items-center flex-1">
-              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">
-                🔤
-              </label>
+              <label className="mb-2 text-center select-none cursor-pointer text-xl font-noto">🔤</label>
               <input
                 type="range"
                 min={10}
@@ -397,7 +406,6 @@ export default function ResultPage() {
                 className={`w-full cursor-pointer slider ${isDarkMode ? 'dark-slider' : 'light-slider'}`}
               />
             </div>
-
           </div>
 
           <p className="mt-6 text-lg leading-relaxed font-medium text-gray-700 dark:text-gray-300 select-text text-justify max-w-2xl font-noto">
@@ -420,16 +428,15 @@ export default function ResultPage() {
             </button>
           </div>
 
-          {/* 시 다시 찾기 버튼 */}
           <button
-  onClick={() => window.location.reload()}
-  aria-label="시 다시 찾기"
-  title="시 다시 찾기"
-  className="font-noto mt-10 mx-auto flex items-center justify-center px-6 py-3 rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold shadow-md hover:from-indigo-700 hover:to-purple-800 transition text-xl gap-2 select-none"
->
-  <RefreshCcw size={24} />
-  다시 시도
-</button>
+            onClick={() => window.location.reload()}
+            aria-label="시 다시 찾기"
+            title="시 다시 찾기"
+            className="font-noto mt-10 mx-auto flex items-center justify-center px-6 py-3 rounded-3xl bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold shadow-md hover:from-indigo-700 hover:to-purple-800 transition text-xl gap-2 select-none"
+          >
+            <RefreshCcw size={24} />
+            다시 시도
+          </button>
 
           <button
             onClick={() => navigate(-1)}

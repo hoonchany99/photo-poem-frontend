@@ -47,6 +47,7 @@ function resizeImage(file, maxSize = 800) {
 
 export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [base64Image, setBase64Image] = useState('');
   const [moodTag, setMoodTag] = useState('평온');
   const [story, setStory] = useState('');
@@ -71,24 +72,53 @@ export default function UploadPage() {
     if (!file) return;
 
     try {
-      setSelectedImage(URL.createObjectURL(file));
-      const resizedBase64 = await resizeImage(file);
-      setBase64Image(resizedBase64);
+      setSelectedImage(URL.createObjectURL(file)); // for preview
+      setSelectedImageFile(file); // for upload
     } catch (error) {
       alert('이미지 처리 중 오류가 발생했습니다.');
       console.error(error);
     }
   };
 
-  const handleGeneratePoem = () => {
-    if (!base64Image && !story.trim() && !moodTag.trim()) {
+  const handleGeneratePoem = async () => {
+    if (!selectedImageFile && !story.trim() && !moodTag.trim()) {
       alert('사진, 사연, 또는 감정을 입력해 주세요.');
       return;
     }
+
     setLoading(true);
-    navigate('/result', {
-      state: { imageBase64: base64Image, moodTag, story },
-    });
+
+    const formData = new FormData();
+    if (selectedImageFile) {
+      formData.append('image', selectedImageFile); // original file
+    }
+    formData.append('moodTag', moodTag);
+    formData.append('story', story);
+
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/image`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      console.log(data.publicUrl);
+
+      if (res.ok) {
+        navigate('/result', {
+          state: {
+            imageUrl: data.publicUrl,
+            moodTag,
+            story,
+          },
+        });
+      } else {
+        alert('업로드 실패: ' + data.error);
+      }
+    } catch (err) {
+      alert('에러 발생: ' + err.message);
+    }
+
+    setLoading(false);
   };
 
   const moodOptions = ['평온', '기쁨', '슬픔', '분노', '감사', '설렘'];
@@ -154,7 +184,7 @@ export default function UploadPage() {
                 type="button"
                 onClick={() => {
                   setSelectedImage(null);
-                  setBase64Image('');
+                  setSelectedImageFile(null);
                 }}
                 className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full bg-black bg-opacity-60 text-white text-xs font-bold hover:bg-opacity-80 transition"
                 aria-label="사진 제거"
