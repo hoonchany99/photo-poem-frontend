@@ -195,7 +195,7 @@ export default function ResultPage() {
     const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
 
     const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
-    const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
+    let message = bodyAndMessage.slice(-1)[0]?.trim() || '';
     message += '\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
 
     return { title, author, poem, message };
@@ -219,6 +219,7 @@ export default function ResultPage() {
             moodTag,
           }
         );
+        console.log('서버 응답 확인:', res.data);
         const parsed = parsePoemResponse(res.data.poemText);
         setPoem(parsed);
 
