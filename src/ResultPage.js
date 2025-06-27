@@ -140,11 +140,11 @@ export default function ResultPage() {
   const [imageLoaded, setImageLoaded] = useState(!useImageBackground);
 
   const gradientOptions = [
-    'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)',
-    'linear-gradient(135deg, #d38312 0%, #a83279 100%)',
-    'linear-gradient(135deg, #FF4E50 0%, #F9D423 100%)',
-    'linear-gradient(135deg, #f2709c 0%, #ff9472 100%)',
-    'linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%)'
+    'linear-gradient(135deg, #FFAFBD 0%, #ffc3a0 100%)',
+    'linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)',
+    'linear-gradient(135deg, #43c6ac 0%, #f8ffae 100%)',
+    'linear-gradient(135deg, #6190e8 0%, #a7bfe8 100%)',
+    'linear-gradient(135deg, #ece9e6 0%, #ffffff 100%)'
   ];
 
   const getDefaultTextSize = (poemText) => {
