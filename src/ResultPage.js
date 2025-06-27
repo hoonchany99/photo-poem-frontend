@@ -229,7 +229,7 @@ export default function ResultPage() {
 
   const saveAsImage = () => {
     if (!cardRef.current) return;
-    html2canvas(cardRef.current, { scale: 2 }).then((canvas) => {
+    html2canvas(cardRef.current, { scale: 2, useCORS: true }).then((canvas) => {
       const link = document.createElement('a');
       link.download = 'poem-card.png';
       link.href = canvas.toDataURL('image/png');
