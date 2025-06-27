@@ -173,31 +173,20 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trimEnd());
+    const lines = text.split('\n').map(line => line.trim());
 
-  if (lines.length < 3) {
-    return { title: '', author: '', poem: '', message: '', source: '' };
+    if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
+
+    const title = lines[0];
+    const author = lines[1];
+
+    const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
+
+    const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
+    const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
+    
+    return { title, author, poem, message };
   }
-
-  const title = lines[0];
-  const author = lines[1];
-
-  // 제목, 작가 제외 후 나머지 전체
-  const content = lines.slice(2).join('\n');
-
-  // 시 본문과 설명+출처를 빈 줄 2개 이상(즉, 연과 연 구분이 아닌 '본문과 설명' 구분)으로 분리
-  // (본문과 설명 사이에는 빈 줄 2개 이상 있다고 가정)
-  const parts = content.split(/\n{2,}/);
-
-  // 맨 뒤 2개 문단은 [설명, 출처]
-  const source = parts.pop() || '';
-  const message = parts.pop() || '';
-
-  // 나머지는 시 본문. 여러 문단일 수도 있으니 다시 \n\n 붙여서 유지
-  const poem = parts.join('\n\n');
-
-  return { title, author, poem, message, source };
-}
 
 
   useEffect(() => {
