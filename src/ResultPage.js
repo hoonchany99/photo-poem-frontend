@@ -173,24 +173,37 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-const paragraphs = text.trim().split(/\n\s*\n/); // 문단 단위 분리
+  const lines = text.trim().split('\n').map(line => line.trimEnd()).filter(line => line !== '');
+  if (lines.length < 2) return { title: '', author: '', poem: '', message: '', source: '' };
 
-if (paragraphs.length < 3) {
-  return { title: '', author: '', poem: '', message: '', source: '' };
+  const title = lines[0];
+  const author = lines[1];
+
+  // 문단 단위로 쪼개기
+  const paragraphs = text.trim().split(/\n\s*\n/);
+
+  if (paragraphs.length < 3) return { title, author, poem: '', message: '', source: '' };
+
+  const source = paragraphs[paragraphs.length - 1].trim();
+  const message = paragraphs[paragraphs.length - 2].trim();
+
+  // 시 본문은 첫 문단부터 마지막 두 문단 전까지 모두 합침
+  const poemParagraphs = paragraphs.slice(0, paragraphs.length - 2);
+
+  // 여기서 title, author 라인이 포함된 첫 문단에서 title, author 빼고 시 본문만 남겨야 함
+  // 첫 문단에서 title, author 제거
+  const firstParagraphLines = poemParagraphs[0].split('\n');
+  // 첫 문단에서 title, author 제거하고 나머지가 시 본문 첫 부분
+  const firstParagraphPoemLines = firstParagraphLines.slice(2); // 0: title, 1: author
+
+  // 나머지 문단은 그대로 유지
+  const restParagraphs = poemParagraphs.slice(1);
+
+  // 시 본문 전체 조합
+  const poem = [firstParagraphPoemLines.join('\n'), ...restParagraphs].filter(p => p.trim() !== '').join('\n\n');
+
+  return { title, author, poem, message, source };
 }
-
-const title = paragraphs[0].split('\n')[0]?.trim() || '';
-const author = paragraphs[0].split('\n')[1]?.trim() || '';
-
-const source = paragraphs[paragraphs.length - 1].trim();
-const message = paragraphs[paragraphs.length - 2].trim();
-const poemBodyParagraphs = paragraphs.slice(1, -2); // title/author 이후 ~ 설명 이전까지
-
-const poem = poemBodyParagraphs.join('\n\n');
-
-return { title, author, poem, message, source };
-}
-
   useEffect(() => {
     if (!imageUrl && !story.trim() && !moodTag.trim()) {
       navigate('/');
