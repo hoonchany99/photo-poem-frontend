@@ -172,8 +172,8 @@ export default function ResultPage() {
     }
   }, [imageUrl, useImageBackground]);
 
-  function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trim()).filter(Boolean); // 공백 제거
+function parsePoemResponse(text) {
+  const lines = text.split('\n').map(line => line.trimEnd());
 
   if (lines.length < 3) {
     return { title: '', author: '', poem: '', message: '', source: '' };
@@ -182,15 +182,16 @@ export default function ResultPage() {
   const title = lines[0];
   const author = lines[1];
 
-  // 남은 줄들: 시 본문 + 설명 + 출처
   const contentLines = lines.slice(2);
 
-  // 출처와 설명은 마지막 2개 줄로 가정
-  const source = contentLines.pop() || '';
-  const message = contentLines.pop() || '';
-  const poem = contentLines.join('\n');  // 나머지는 시 본문으로 간주
+  const lastLine = contentLines[contentLines.length - 1]?.trim();
+  const secondLastLine = contentLines[contentLines.length - 2]?.trim();
 
-  console.log('✅ 파싱결과:', { title, author, poem, message, source });
+  const source = lastLine?.startsWith('출처:') ? lastLine : '';
+  const message = (!source && lastLine) ? lastLine : secondLastLine || '';
+
+  const poemLines = contentLines.slice(0, contentLines.length - (source ? 1 : 0) - (message ? 1 : 0));
+  const poem = poemLines.join('\n');
 
   return { title, author, poem, message, source };
 }

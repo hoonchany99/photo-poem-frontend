@@ -74,7 +74,7 @@ export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [base64Image, setBase64Image] = useState('');
-  const [moodTag, setMoodTag] = useState('평온');
+  const [moodTag, setMoodTag] = useState('기쁨');
   const [story, setStory] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedMode = localStorage.getItem('isDarkMode');
