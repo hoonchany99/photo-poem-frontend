@@ -183,25 +183,30 @@ export default function ResultPage() {
   // 시 본문과 설명+출처 부분 분리 (빈 줄 2개 기준)
   const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
 
-  const poem = bodyAndMessage[0].trim();  // 시 본문 (첫 덩어리)
-  const remaining = bodyAndMessage.slice(1).join('\n\n').trim(); // 설명 + 출처
+  const poem = bodyAndMessage[0].trim();  // 시 본문
+  const remaining = bodyAndMessage.slice(1).join('\n\n').trim(); // 설명 + 저작권 + 출처
 
-  // 설명과 출처 분리 (출처는 마지막 줄)
-  const lastNewlineIdx = remaining.lastIndexOf('\n');
+  const COPYRIGHT_NOTICE = '※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
+  const SOURCE_PREFIX = '출처:';
+
   let message = '';
+  let copyright = '';
   let source = '';
 
-  if (lastNewlineIdx !== -1) {
-    message = remaining.slice(0, lastNewlineIdx).trim();
-    source = remaining.slice(lastNewlineIdx + 1).trim();
-  } else {
-    message = remaining;
+  const parts = remaining.split('\n');
+
+  for (let i = 0; i < parts.length; i++) {
+    const line = parts[i].trim();
+    if (line.startsWith(SOURCE_PREFIX)) {
+      source = line;
+    } else if (line === COPYRIGHT_NOTICE) {
+      copyright = line;
+    } else {
+      message += (message ? '\n' : '') + line;
+    }
   }
 
-  // 저작권 문구는 별도로 분리
-  const copyright = '※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
-
-  return { title, author, poem, message, copyright, source };
+  return { title, author, poem, message: message.trim(), copyright, source };
 }
 
   useEffect(() => {
