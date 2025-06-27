@@ -104,7 +104,7 @@ function PoemCard({
                   maxWidth: '600px',
                 }}
               >
-                {poem.author}, {poem.title}
+                - {poem.author}, "{poem.title}"
               </div>
             </motion.div>
           </TransformComponent>
