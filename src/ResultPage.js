@@ -25,11 +25,12 @@ function PoemCard({
       ref={cardRef}
       className="max-w-[90vw] w-[700px] aspect-[7/9] relative shadow-2xl rounded-none mx-auto overflow-hidden"
       style={{
-        background: !useImageBackground ? gradientBackground : selectedGradient,
+        background: useImageBackground ? 'black' : gradientBackground,
       }}
     >
       {useImageBackground && imageBase64 && (
         <>
+          <div className="absolute inset-0 bg-black" />
           <img
             key={imageBase64}
             src={imageBase64}
@@ -39,7 +40,10 @@ function PoemCard({
             className="absolute inset-0 w-full h-full object-cover opacity-90"
             style={{ objectPosition: 'center center' }}
           />
-          <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity * 0.5 }} />
+          <div
+            className="absolute inset-0 bg-black"
+            style={{ opacity: overlayOpacity * 0.5 }}
+          />
         </>
       )}
 
