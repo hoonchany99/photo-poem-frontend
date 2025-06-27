@@ -129,10 +129,10 @@ export default function ResultPage() {
 
   const gradientOptions = [
     'linear-gradient(135deg, #FFAFBD 0%, #ffc3a0 100%)',
-    'linear-gradient(135deg, #ff5f6d 0%, #ffc371 100%)',
-    'linear-gradient(135deg, #43c6ac 0%, #f8ffae 100%)',
-    'linear-gradient(135deg, #6190e8 0%, #a7bfe8 100%)',
-    'linear-gradient(135deg, #ece9e6 0%, #ffffff 100%)'
+    'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
+    'linear-gradient(135deg, #fddb92 0%, #d1fdff 100%)',
+    'linear-gradient(135deg, #9890e3 0%, #b1f4cf 100%)',
+    'linear-gradient(135deg, #ebc0fd 0%, #d9ded8 100%)'
   ];
 
   const getDefaultTextSize = (poemText) => {
