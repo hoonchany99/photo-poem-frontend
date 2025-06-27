@@ -173,7 +173,6 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  // 줄 단위로 나누고 빈 줄(공백만 있는 줄) 제거하지 않음 (문단 구분 위해 유지)
   const lines = text.split('\n').map(line => line.trimEnd());
 
   if (lines.length < 4) return { title: '', author: '', poem: '', message: '', source: '' };
@@ -181,19 +180,16 @@ function parsePoemResponse(text) {
   const title = lines[0];
   const author = lines[1];
 
-  // 나머지 본문 (시+설명+출처)
   const bodyLines = lines.slice(2);
+  console.log('bodyLines:', bodyLines);
 
-  // 마지막 줄은 출처로 분리
-  const source = bodyLines[bodyLines.length - 1].trim();
+  const source = bodyLines.length > 0 ? bodyLines[bodyLines.length - 1].trim() : '';
+  console.log('source:', source);
 
-  // 출처 제외 나머지 텍스트
   const bodyText = bodyLines.slice(0, -1).join('\n');
 
-  // 빈 줄(문단)을 기준으로 나누기
   const paragraphs = bodyText.split(/\n\s*\n/).map(p => p.trim());
 
-  // 마지막 문단은 설명, 나머지는 시 본문
   const message = paragraphs.length > 1 ? paragraphs[paragraphs.length - 1] : '';
   const poem = paragraphs.length > 1 ? paragraphs.slice(0, -1).join('\n\n') : paragraphs[0] || '';
 
