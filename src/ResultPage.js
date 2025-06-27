@@ -52,7 +52,7 @@ function PoemCard({
         style={{
           fontFamily: "'Poppins', sans-serif",
           fontWeight: '600',
-          fontSize: '14px',
+          fontSize: '10px',
           color: 'rgba(255, 255, 255, 0.7)',
           userSelect: 'none',
           letterSpacing: '0.05em',
