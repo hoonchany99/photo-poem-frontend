@@ -173,40 +173,27 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
   function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trim());
+  const lines = text.split('\n').map(line => line.trim()).filter(Boolean); // 빈 줄 제거
 
-  if (lines.length < 3) return { title: '', author: '', poem: '', message: '', copyright: '', source: '' };
+  if (lines.length < 3) {
+    return { title: '', author: '', poem: '', message: '', source: '' };
+  }
 
   const title = lines[0];
   const author = lines[1];
+  const bodyLines = lines.slice(2); // 시 본문 + 설명 + 출처
 
-  // 시 본문과 설명+출처 부분 분리 (빈 줄 2개 기준)
-  const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
+  const paragraphs = bodyLines.join('\n').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
 
-  const poem = bodyAndMessage[0].trim();  // 시 본문
-  const remaining = bodyAndMessage.slice(1).join('\n\n').trim(); // 설명 + 저작권 + 출처
-
-  const COPYRIGHT_NOTICE = '※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
-  const SOURCE_PREFIX = '출처:';
-
-  let message = '';
-  let copyright = '';
-  let source = '';
-
-  const parts = remaining.split('\n');
-
-  for (let i = 0; i < parts.length; i++) {
-    const line = parts[i].trim();
-    if (line.startsWith(SOURCE_PREFIX)) {
-      source = line;
-    } else if (line === COPYRIGHT_NOTICE) {
-      copyright = line;
-    } else {
-      message += (message ? '\n' : '') + line;
-    }
+  if (paragraphs.length < 2) {
+    return { title, author, poem: '', message: '', source: '' };
   }
 
-  return { title, author, poem, message: message.trim(), copyright, source };
+  const poem = paragraphs.slice(0, -2).join('\n\n'); // 시 본문
+  const message = paragraphs[paragraphs.length - 2]; // 설명
+  const source = paragraphs[paragraphs.length - 1];  // 출처
+
+  return { title, author, poem, message, source };
 }
 
   useEffect(() => {
@@ -455,7 +442,7 @@ useEffect(() => {
           </p>
 
 <p className="mt-4 text-sm text-gray-500 select-text max-w-2xl font-noto whitespace-pre-wrap">
-  {poem.copyright}
+  ※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.
 </p>
 
 <p className="text-sm text-gray-500 mt-2 select-text max-w-2xl font-noto">
