@@ -184,7 +184,7 @@ export default function ResultPage() {
 
     const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
     let message = bodyAndMessage.slice(-1)[0]?.trim() || '';
-    message += '\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
+    message += '\n\n\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
 
     return { title, author, poem, message };
   }
