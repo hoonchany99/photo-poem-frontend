@@ -173,21 +173,25 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
   function parsePoemResponse(text) {
-    const lines = text.split('\n').map(line => line.trim());
+  const lines = text.split('\n').map(line => line.trim());
 
-    if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
+  if (lines.length < 3) return { title: '', author: '', poem: '', message: '', source: '' };
 
-    const title = lines[0];
-    const author = lines[1];
+  const title = lines[0];
+  const author = lines[1];
 
-    const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
+  const bodyAndMessage = lines.slice(2).join('\n').split(/\n\s*\n/);
 
-    const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
-    let message = bodyAndMessage.slice(-1)[0]?.trim() || '';
-    message += '\n\n\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
+  const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
+  let messageBlock = bodyAndMessage.slice(-1)[0]?.trim() || '';
 
-    return { title, author, poem, message };
-  }
+  // 설명과 출처를 마지막 줄 기준으로 나누기
+  const messageLines = messageBlock.split('\n');
+  const source = messageLines.pop()?.trim() || '';
+  const message = messageLines.join('\n').trim() + '\n\n\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
+
+  return { title, author, poem, message, source };
+}
 
   useEffect(() => {
     if (!imageUrl && !story.trim() && !moodTag.trim()) {
