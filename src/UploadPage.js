@@ -88,32 +88,38 @@ export default function UploadPage() {
 
     setLoading(true);
 
-    const formData = new FormData();
-    if (selectedImageFile) {
-      formData.append('image', selectedImageFile); // original file
-    }
-    formData.append('moodTag', moodTag);
-    formData.append('story', story);
-
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/image`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      console.log(data.publicUrl);
+      let publicUrl = null;
 
-      if (res.ok) {
-        navigate('/result', {
-          state: {
-            imageUrl: data.publicUrl,
-            moodTag,
-            story,
-          },
+      if (selectedImageFile) {
+        const formData = new FormData();
+        formData.append('image', selectedImageFile); // original file
+        formData.append('moodTag', moodTag);
+        formData.append('story', story);
+
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/image`, {
+          method: 'POST',
+          body: formData,
         });
-      } else {
-        alert('업로드 실패: ' + data.error);
+        const data = await res.json();
+
+        if (res.ok) {
+          publicUrl = data.publicUrl;
+        } else {
+          alert('업로드 실패: ' + data.error);
+          setLoading(false);
+          return;
+        }
       }
+
+      // Navigate regardless of image upload success or no image
+      navigate('/result', {
+        state: {
+          imageUrl: publicUrl,
+          moodTag,
+          story,
+        },
+      });
     } catch (err) {
       alert('에러 발생: ' + err.message);
     }
