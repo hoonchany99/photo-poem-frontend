@@ -217,10 +217,14 @@ export default function ResultPage() {
           }
         );
         console.log('서버 응답 확인:', res.data);
-        const parsed = parsePoemResponse(res.data.poemText);
-        setPoem(parsed);
-
-        setTextSize(getDefaultTextSize(parsed.poem));
+        try {
+          const parsed = parsePoemResponse(res.data.poemText);
+          console.log('📦 파싱결과:', parsed);
+          setPoem(parsed);
+          setTextSize(getDefaultTextSize(parsed.poem));
+        } catch (e) {
+          console.error('❌ 파싱 중 오류 발생:', e);
+        }
       } catch {
         alert('시 찾기에 실패했습니다.');
       }
