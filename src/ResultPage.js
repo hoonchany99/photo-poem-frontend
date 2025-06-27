@@ -173,37 +173,33 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.trim().split('\n').map(line => line.trimEnd()).filter(line => line !== '');
-  if (lines.length < 2) return { title: '', author: '', poem: '', message: '', source: '' };
+  const lines = text.split('\n').map(line => line.trimEnd());
+
+  if (lines.length < 3) {
+    return { title: '', author: '', poem: '', message: '', source: '' };
+  }
 
   const title = lines[0];
   const author = lines[1];
 
-  // 문단 단위로 쪼개기
-  const paragraphs = text.trim().split(/\n\s*\n/);
+  // 제목, 작가 제외 후 나머지 전체
+  const content = lines.slice(2).join('\n');
 
-  if (paragraphs.length < 3) return { title, author, poem: '', message: '', source: '' };
+  // 시 본문과 설명+출처를 빈 줄 2개 이상(즉, 연과 연 구분이 아닌 '본문과 설명' 구분)으로 분리
+  // (본문과 설명 사이에는 빈 줄 2개 이상 있다고 가정)
+  const parts = content.split(/\n{2,}/);
 
-  const source = paragraphs[paragraphs.length - 1].trim();
-  const message = paragraphs[paragraphs.length - 2].trim();
+  // 맨 뒤 2개 문단은 [설명, 출처]
+  const source = parts.pop() || '';
+  const message = parts.pop() || '';
 
-  // 시 본문은 첫 문단부터 마지막 두 문단 전까지 모두 합침
-  const poemParagraphs = paragraphs.slice(0, paragraphs.length - 2);
-
-  // 여기서 title, author 라인이 포함된 첫 문단에서 title, author 빼고 시 본문만 남겨야 함
-  // 첫 문단에서 title, author 제거
-  const firstParagraphLines = poemParagraphs[0].split('\n');
-  // 첫 문단에서 title, author 제거하고 나머지가 시 본문 첫 부분
-  const firstParagraphPoemLines = firstParagraphLines.slice(2); // 0: title, 1: author
-
-  // 나머지 문단은 그대로 유지
-  const restParagraphs = poemParagraphs.slice(1);
-
-  // 시 본문 전체 조합
-  const poem = [firstParagraphPoemLines.join('\n'), ...restParagraphs].filter(p => p.trim() !== '').join('\n\n');
+  // 나머지는 시 본문. 여러 문단일 수도 있으니 다시 \n\n 붙여서 유지
+  const poem = parts.join('\n\n');
 
   return { title, author, poem, message, source };
 }
+
+
   useEffect(() => {
     if (!imageUrl && !story.trim() && !moodTag.trim()) {
       navigate('/');
