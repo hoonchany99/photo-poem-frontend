@@ -173,7 +173,7 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trimEnd()).filter(line => line !== '');
+  const lines = text.split('\n').map(line => line.trimEnd()); // 빈 줄 삭제 안 함
 
   if (lines.length < 3) {
     return { title: '', author: '', poem: '', message: '', source: '' };
@@ -181,7 +181,6 @@ function parsePoemResponse(text) {
 
   const title = lines[0];
   const author = lines[1];
-
   const contentLines = lines.slice(2);
 
   if (contentLines.length < 2) {
@@ -192,7 +191,7 @@ function parsePoemResponse(text) {
   const message = contentLines[contentLines.length - 2];
   const poemLines = contentLines.slice(0, -2);
 
-  const poem = poemLines.join('\n');
+  const poem = poemLines.join('\n'); // 연 사이의 공백 유지됨
 
   return { title, author, poem, message, source };
 }
