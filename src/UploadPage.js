@@ -156,7 +156,7 @@ export default function UploadPage() {
     setLoading(false);
   };
 
-  const moodOptions = ['외로움', '그리움', '위로', '사랑', '기쁨', '감사'];
+  const moodOptions = ['기쁨', '사랑', '행복', '감사', '설렘', '위로'];
 
   return (
     <div
