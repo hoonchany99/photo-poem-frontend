@@ -173,35 +173,22 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+    const lines = text.split('\n').map(line => line.trim());
 
-  if (lines.length < 3) return { title: '', author: '', poem: '', message: '', source: '' };
+    if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
 
-  const title = lines[0];
-  const author = lines[1];
+    const title = lines[0];
+    const author = lines[1];
+    const source = lines[-1];
 
-  const content = lines.slice(2).join('\n').split(/\n\s*\n/);
+    const bodyAndMessageAndSource = lines.slice(2).join('\n').split(/\n\s*\n/);
+    const bodyAndMessage = lines.slice(-1).join('\n').split(/\n\s*\n/);
 
-  if (content.length < 2) {
-    // 출처와 설명이 없거나 모자랄 경우
-    return {
-      title,
-      author,
-      poem: content.join('\n\n').trim(),
-      message: '',
-      source: '',
-    };
+    const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
+    const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
+    
+    return { title, author, poem, message, source };
   }
-
-  // 출처는 마지막 문단
-  const source = content[content.length - 1].trim();
-  // 설명은 출처 바로 전 문단
-  const message = content.length > 1 ? content[content.length - 2].trim() : '';
-  // 시 본문은 나머지 문단들
-  const poem = content.slice(0, content.length - 2).join('\n\n').trim();
-
-  return { title, author, poem, message, source };
-}
 
 
   useEffect(() => {
