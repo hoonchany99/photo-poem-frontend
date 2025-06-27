@@ -120,7 +120,7 @@ export default function ResultPage() {
   const { imageUrl, moodTag, story } = location.state || {};
   const { isDarkMode, toggleDarkMode } = useTheme();
 
-  const [poem, setPoem] = useState({ title: '', author: '', poem: '', message: '' });
+  const [poem, setPoem] = useState({ title: '', author: '', poem: '', message: '',source: '' });
   const [loading, setLoading] = useState(true);
   const cardRef = useRef();
 
@@ -173,22 +173,24 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-    const lines = text.split('\n').map(line => line.trim());
+  const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
 
-    if (lines.length < 3) return { title: '', author: '', poem: '', message: '' };
+  if (lines.length < 4) return { title: '', author: '', poem: '', message: '', source: '' };
 
-    const title = lines[0];
-    const author = lines[1];
-    const source = lines[-1];
+  const title = lines[0];
+  const author = lines[1];
+  const source = lines[lines.length - 1];         // ✅ 마지막 줄을 출처로
+  const message = lines[lines.length - 2];        // ✅ 그 전 줄을 설명으로
+  const poemLines = lines.slice(2, lines.length - 2); // ✅ 나머지는 시 본문
 
-    const bodyAndMessageAndSource = lines.slice(2).join('\n').split(/\n\s*\n/);
-    const bodyAndMessage = lines.slice(-1).join('\n').split(/\n\s*\n/);
-
-    const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
-    const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
-    
-    return { title, author, poem, message, source };
-  }
+  return {
+    title,
+    author,
+    poem: poemLines.join('\n'),
+    message,
+    source,
+  };
+}
 
 
   useEffect(() => {
