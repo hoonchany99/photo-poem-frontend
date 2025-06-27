@@ -173,23 +173,31 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+  // 줄 단위로 나누고 빈 줄(공백만 있는 줄) 제거하지 않음 (문단 구분 위해 유지)
+  const lines = text.split('\n').map(line => line.trimEnd());
 
   if (lines.length < 4) return { title: '', author: '', poem: '', message: '', source: '' };
 
   const title = lines[0];
   const author = lines[1];
-  const source = lines[lines.length - 1];         // ✅ 마지막 줄을 출처로
-  const message = lines[lines.length - 2];        // ✅ 그 전 줄을 설명으로
-  const poemLines = lines.slice(2, lines.length - 2); // ✅ 나머지는 시 본문
 
-  return {
-    title,
-    author,
-    poem: poemLines.join('\n'),
-    message,
-    source,
-  };
+  // 나머지 본문 (시+설명+출처)
+  const bodyLines = lines.slice(2);
+
+  // 마지막 줄은 출처로 분리
+  const source = bodyLines[bodyLines.length - 1].trim();
+
+  // 출처 제외 나머지 텍스트
+  const bodyText = bodyLines.slice(0, -1).join('\n');
+
+  // 빈 줄(문단)을 기준으로 나누기
+  const paragraphs = bodyText.split(/\n\s*\n/).map(p => p.trim());
+
+  // 마지막 문단은 설명, 나머지는 시 본문
+  const message = paragraphs.length > 1 ? paragraphs[paragraphs.length - 1] : '';
+  const poem = paragraphs.length > 1 ? paragraphs.slice(0, -1).join('\n\n') : paragraphs[0] || '';
+
+  return { title, author, poem, message, source };
 }
 
 
