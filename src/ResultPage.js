@@ -173,7 +173,7 @@ export default function ResultPage() {
   }, [imageUrl, useImageBackground]);
 
 function parsePoemResponse(text) {
-  const lines = text.split('\n').map(line => line.trimEnd());
+  const lines = text.split('\n').map(line => line.trimEnd()).filter(line => line !== '');
 
   if (lines.length < 3) {
     return { title: '', author: '', poem: '', message: '', source: '' };
@@ -184,13 +184,14 @@ function parsePoemResponse(text) {
 
   const contentLines = lines.slice(2);
 
-  const lastLine = contentLines[contentLines.length - 1]?.trim();
-  const secondLastLine = contentLines[contentLines.length - 2]?.trim();
+  if (contentLines.length < 2) {
+    return { title, author, poem: contentLines.join('\n'), message: '', source: '' };
+  }
 
-  const source = lastLine?.startsWith('출처:') ? lastLine : '';
-  const message = (!source && lastLine) ? lastLine : secondLastLine || '';
+  const source = contentLines[contentLines.length - 1];
+  const message = contentLines[contentLines.length - 2];
+  const poemLines = contentLines.slice(0, -2);
 
-  const poemLines = contentLines.slice(0, contentLines.length - (source ? 1 : 0) - (message ? 1 : 0));
   const poem = poemLines.join('\n');
 
   return { title, author, poem, message, source };
