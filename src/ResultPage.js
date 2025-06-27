@@ -192,7 +192,9 @@ export default function ResultPage() {
   const poem = paragraphs.slice(0, -2).join('\n\n'); // 시 본문
   const message = paragraphs[paragraphs.length - 2]; // 설명
   const source = paragraphs[paragraphs.length - 1];  // 출처
-  console.log({ title, author, poem, message, source });
+  
+  console.log(title, author, poem, message, source);
+  
   return { title, author, poem, message, source };
 }
 
