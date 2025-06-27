@@ -305,34 +305,56 @@ export default function ResultPage() {
       </div>
 
       {loading || (useImageBackground && !imageLoaded) ? (
-        <div
-          className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-50 px-4"
-          style={{ overflow: 'hidden', touchAction: 'none' }}
-        >
-          <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
-            {loadingMessages[loadingMsgIndex]}
-          </span>
-          <svg
-            className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
+        <>
+          {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
+          <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
+            <span
+              className="font-semibold text-sm font-noto cursor-pointer"
+              onClick={() => navigate('/')}
+            >
+              📜 시가 필요할 때
+            </span>
+            <motion.div
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 shadow-lg cursor-pointer"
+              onClick={toggleDarkMode}
+              aria-label="Toggle dark mode"
+              title="다크 모드 토글"
+              whileTap={{ scale: 0.85 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            >
+              {isDarkMode ? '🌙' : '☀️'}
+            </motion.div>
+          </div>
+
+          <div
+            className="fixed inset-0 flex flex-col items-center justify-center bg-transparent z-40 px-4"
+            style={{ overflow: 'hidden', touchAction: 'none' }}
           >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"
-            />
-          </svg>
-        </div>
+            <span className="text-3xl font-semibold mb-6 text-indigo-700 dark:text-indigo-400 select-none">
+              {loadingMessages[loadingMsgIndex]}
+            </span>
+            <svg
+              className="animate-spin h-12 w-12 text-indigo-600 dark:text-indigo-400"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"
+              />
+            </svg>
+          </div>
+        </>
       ) : (
         <>
           <div className="mt-12">
