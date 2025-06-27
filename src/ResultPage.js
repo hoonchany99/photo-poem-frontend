@@ -192,6 +192,7 @@ export default function ResultPage() {
 
     const poem = bodyAndMessage.slice(0, -1).join('\n\n').trim();
     const message = bodyAndMessage.slice(-1)[0]?.trim() || '';
+    message += '\n\n※ 저작권 보호를 위해 시의 일부만 제공되며, 전문은 반드시 출처를 참고하시기 바랍니다.';
 
     return { title, author, poem, message };
   }
@@ -255,22 +256,28 @@ export default function ResultPage() {
   };
 
   const loadingMessages = [
-    '시 찾는 중... ✨',
-    '잠시만 기다려 주세요... ⏳',
-    '감성가득 시 고르는 중... 💌',
-    '곧 아름다운 시가 도착합니다... 🌸',
-  ];
+  '시 찾는 중... ✨',
+  '잠시만 기다려 주세요... ⏳',
+  '감성가득 시 고르는 중... 💌',
+  '곧 아름다운 시가 도착합니다... 🌸',
+  '당신의 순간에 어울리는 시를 찾는 중이에요... 🍃',
+  '추억을 감싸는 글귀를 찾고 있어요... 🕊️',
+  '시의 결을 따라 마음을 살펴보는 중... 🖋️',
+  '감정의 파장을 따라가는 중입니다... 🌊',
+  '사진 속 이야기를 시로 엮는 중... 🖼️',
+  '당신만을 위한 한 줄을 고르고 있어요... 📖',
+];
 
-  const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
+const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
 
-  useEffect(() => {
-    if (loading) {
-      const interval = setInterval(() => {
-        setLoadingMsgIndex((prev) => (prev + 1) % loadingMessages.length);
-      }, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [loading]);
+useEffect(() => {
+  if (loading) {
+    const interval = setInterval(() => {
+      setLoadingMsgIndex(Math.floor(Math.random() * loadingMessages.length));
+    }, 3000);
+    return () => clearInterval(interval);
+  }
+}, [loading]);
 
   return (
     <motion.div
