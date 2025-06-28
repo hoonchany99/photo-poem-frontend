@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Image as ImageIcon, Search } from 'lucide-react';
+import ReactGA from 'react-ga4';
 
 // 이미지 리사이즈 함수
 function resizeImage(file, maxSize = 800) {
@@ -104,6 +105,11 @@ export default function UploadPage() {
 
       setSelectedImage(URL.createObjectURL(finalFile));
       setSelectedImageFile(finalFile);
+
+      ReactGA.event({
+        category: 'User',
+        action: 'Selected Image',
+      });
     } catch (error) {
       alert('이미지 처리 중 오류가 발생했습니다.');
       console.error(error);
@@ -141,6 +147,12 @@ export default function UploadPage() {
           return;
         }
       }
+
+      ReactGA.event({
+        category: 'User',
+        action: 'Clicked Generate Poem',
+        label: moodTag,
+      });
 
       navigate('/result', {
         state: {
@@ -182,7 +194,14 @@ export default function UploadPage() {
         {moodOptions.map((mood) => (
           <button
             key={mood}
-            onClick={() => setMoodTag(mood)}
+            onClick={() => {
+              setMoodTag(mood);
+              ReactGA.event({
+                category: 'User',
+                action: 'Selected Mood Tag',
+                label: mood,
+              });
+            }}
             className={`px-6 py-2 rounded-3xl font-semibold shadow-md transition-all duration-300 ${
               moodTag === mood
                 ? 'bg-indigo-600 text-white scale-105'

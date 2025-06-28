@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import ReactGA from 'react-ga4';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -236,10 +237,19 @@ function parsePoemResponse(text) {
     }
 
     fetchPoem();
+    ReactGA.event({
+      category: 'Poem',
+      action: 'Fetched Poem',
+      label: moodTag,
+    });
   }, [imageUrl, moodTag, story, navigate]);
 
   const saveAsImage = () => {
     if (!cardRef.current) return;
+    ReactGA.event({
+      category: 'Poem',
+      action: 'Clicked Save Image',
+    });
     html2canvas(cardRef.current, { scale: 3, useCORS: true,backgroundColor: null }).then((canvas) => {
       const link = document.createElement('a');
       link.download = 'poem-card.png';
@@ -249,6 +259,10 @@ function parsePoemResponse(text) {
   };
 
   const sharePoem = async () => {
+    ReactGA.event({
+      category: 'Poem',
+      action: 'Clicked Share',
+    });
     if (navigator.share) {
       try {
         await navigator.share({

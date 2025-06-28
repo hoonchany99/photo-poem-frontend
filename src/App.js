@@ -10,7 +10,10 @@ function App() {
   const location = useLocation();
 
   ReactGA.initialize('G-Z71Q92KRNB'); // Replace with your actual Google Analytics 4 measurement ID
-  ReactGA.send('pageview');
+
+  React.useEffect(() => {
+    ReactGA.send({ hitType: 'pageview', page: location.pathname });
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="wait">
