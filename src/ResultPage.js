@@ -305,7 +305,7 @@ useEffect(() => {
 
   return (
     <motion.div
-      className={`min-h-screen p-8 flex flex-col items-center justify-center transition-colors duration-700 ${
+      className={`min-h-screen px-6 py-10 flex flex-col items-center justify-center transition-colors duration-700 ${
         isDarkMode
           ? 'dark bg-gray-900 text-white'
           : 'bg-gradient-to-b from-[#FAF5E4] to-[#FDF6E3] text-black'
