@@ -26,6 +26,8 @@ function PoemCard({
       className="max-w-[90vw] w-[700px] aspect-[7/9] relative shadow-2xl rounded-none mx-auto overflow-hidden"
       style={{
         background: useImageBackground ? 'black' : gradientBackground,
+        backgroundColor: useImageBackground ? 'black' : undefined,
+        border: 'none',
       }}
     >
       {useImageBackground && imageBase64 && (
