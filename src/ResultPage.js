@@ -28,6 +28,9 @@ function PoemCard({
         background: useImageBackground ? 'black' : gradientBackground,
         backgroundColor: useImageBackground ? 'black' : undefined,
         border: 'none',
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box',
       }}
     >
       {useImageBackground && imageBase64 && (
@@ -297,6 +300,12 @@ useEffect(() => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
+      style={{
+        margin: 0,
+        padding: 0,
+        boxSizing: 'border-box',
+        background: undefined, // keep background controlled by className
+      }}
     >
       {/* 상단 바 - 좌측 로고, 우측 다크모드 버튼 */}
       <div className="absolute top-2 left-5 right-5 z-50 flex justify-between items-center select-none">
