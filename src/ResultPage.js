@@ -60,7 +60,7 @@ function PoemCard({
           textTransform: 'lowercase',
         }}
       >
-        @poemtimes
+        @poemsfor_everypic
       </div>
 
       <div className="absolute inset-0 flex items-center justify-center">
