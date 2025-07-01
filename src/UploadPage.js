@@ -216,7 +216,7 @@ export default function UploadPage() {
       <div className="w-full max-w-xl mb-8 flex flex-col sm:flex-row sm:items-center gap-3">
         <input
           type="text"
-          placeholder="짧은 사연이나 사진을 입력해 보세요."
+          placeholder="짧은 사연이나 사진을 주면 시를 추천해줄게!"
           value={story}
           onChange={(e) => setStory(e.target.value)}
           className={`flex-grow py-4 px-6 rounded-full border shadow-lg backdrop-blur-sm bg-white/70 dark:bg-gray-800/70 font-noto focus:outline-none focus:ring-4 focus:ring-indigo-400 transition-all ${
